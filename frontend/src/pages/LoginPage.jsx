@@ -100,7 +100,7 @@ const LoginPage = ({ onLogin }) => {
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    placeholder="test@example.com"
+                    placeholder="Enter your email"
                     className="input-glass pl-14"
                     data-testid="login-email-input"
                   />
