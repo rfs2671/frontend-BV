@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   ArrowLeft, 
@@ -9,41 +9,88 @@ import {
   Trash2, 
   X,
   Search,
-  LayoutGrid,
   LogOut
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import AnimatedBackground from '../components/ui/AnimatedBackground';
 import FloatingNav from '../components/ui/FloatingNav';
+import { ProjectCardSkeleton } from '../components/ui/GlassSkeleton';
+import { useToast } from '../components/ui/Toast';
+import { projectsAPI } from '../utils/api';
 
 const ProjectsPage = ({ user, onLogout }) => {
   const navigate = useNavigate();
+  const toast = useToast();
   const [searchQuery, setSearchQuery] = useState('');
   const [showAddModal, setShowAddModal] = useState(false);
-  const [projects, setProjects] = useState([
-    { id: '1', name: 'Downtown Tower Phase 2', location: 'New York, NY', qr_code: 'DT-001', nfc_tags: [{ tag_id: 'ABC123' }] },
-    { id: '2', name: 'Harbor Bridge Renovation', location: 'Brooklyn, NY', qr_code: 'HB-002', nfc_tags: [] },
-    { id: '3', name: 'Metro Station Expansion', location: 'Manhattan, NY', qr_code: 'MS-003', nfc_tags: [{ tag_id: 'DEF456' }, { tag_id: 'GHI789' }] },
-  ]);
+  const [loading, setLoading] = useState(true);
+  const [creating, setCreating] = useState(false);
+  const [projects, setProjects] = useState([]);
   const [newProject, setNewProject] = useState({ name: '', location: '' });
 
+  // Fetch projects on mount
+  useEffect(() => {
+    fetchProjects();
+  }, []);
+
+  const fetchProjects = async () => {
+    setLoading(true);
+    try {
+      const data = await projectsAPI.getAll();
+      setProjects(Array.isArray(data) ? data : []);
+    } catch (error) {
+      console.error('Failed to fetch projects:', error);
+      toast.error('Load Error', 'Could not load projects');
+      setProjects([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const filteredProjects = projects.filter(p => 
-    p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    p.location.toLowerCase().includes(searchQuery.toLowerCase())
+    (p.name?.toLowerCase() || '').includes(searchQuery.toLowerCase()) ||
+    (p.location?.toLowerCase() || '').includes(searchQuery.toLowerCase())
   );
 
-  const handleAddProject = () => {
-    if (!newProject.name.trim() || !newProject.location.trim()) return;
-    const project = {
-      id: Date.now().toString(),
-      ...newProject,
-      qr_code: `PRJ-${Math.random().toString(36).substr(2, 5).toUpperCase()}`,
-      nfc_tags: [],
-    };
-    setProjects([...projects, project]);
-    setNewProject({ name: '', location: '' });
-    setShowAddModal(false);
+  const handleAddProject = async () => {
+    if (!newProject.name.trim() || !newProject.location.trim()) {
+      toast.warning('Validation Error', 'Please fill in all fields');
+      return;
+    }
+
+    setCreating(true);
+    try {
+      const createdProject = await projectsAPI.create({
+        name: newProject.name,
+        location: newProject.location,
+      });
+      
+      setProjects([...projects, createdProject]);
+      setNewProject({ name: '', location: '' });
+      setShowAddModal(false);
+      toast.success('Success', 'Project created successfully');
+    } catch (error) {
+      console.error('Failed to create project:', error);
+      toast.error('Create Error', error.message || 'Could not create project');
+    } finally {
+      setCreating(false);
+    }
   };
+
+  const handleDeleteProject = async (projectId, e) => {
+    e.stopPropagation();
+    
+    try {
+      await projectsAPI.delete(projectId);
+      setProjects(projects.filter(p => (p._id || p.id) !== projectId));
+      toast.success('Deleted', 'Project removed successfully');
+    } catch (error) {
+      console.error('Failed to delete project:', error);
+      toast.error('Delete Error', error.message || 'Could not delete project');
+    }
+  };
+
+  const getProjectId = (project) => project._id || project.id;
 
   return (
     <div className="min-h-screen relative">
@@ -113,67 +160,86 @@ const ProjectsPage = ({ user, onLogout }) => {
 
           {/* Projects List */}
           <div className="space-y-4">
-            {filteredProjects.map((project, index) => (
-              <motion.div
-                key={project.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.05 }}
-                whileHover={{ scale: 1.01, y: -2 }}
-                className="stat-card p-6 cursor-pointer group"
-                onClick={() => navigate(`/project/${project.id}`)}
-              >
-                <div className="absolute inset-0 bg-white/5 rounded-3xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
-                
-                <div className="relative z-10 flex items-center gap-6">
-                  {/* Icon */}
-                  <div className="icon-pod">
-                    <Building2 className="w-5 h-5 text-white/60" strokeWidth={1.5} />
-                  </div>
+            {loading ? (
+              // Skeleton loaders
+              <>
+                <ProjectCardSkeleton />
+                <ProjectCardSkeleton />
+                <ProjectCardSkeleton />
+              </>
+            ) : filteredProjects.length > 0 ? (
+              filteredProjects.map((project, index) => (
+                <motion.div
+                  key={getProjectId(project)}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.05 }}
+                  whileHover={{ scale: 1.01, y: -2 }}
+                  className="stat-card p-6 cursor-pointer group"
+                  data-testid={`project-card-${getProjectId(project)}`}
+                >
+                  <div className="absolute inset-0 bg-white/5 rounded-3xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
                   
-                  {/* Info */}
-                  <div className="flex-1">
-                    <h3 className="text-white/90 font-medium text-lg mb-1">{project.name}</h3>
-                    <div className="flex items-center gap-2 text-white/40 text-sm">
-                      <MapPin className="w-4 h-4" strokeWidth={1.5} />
-                      <span>{project.location}</span>
+                  <div className="relative z-10 flex items-center gap-6">
+                    {/* Icon */}
+                    <div className="icon-pod">
+                      <Building2 className="w-5 h-5 text-white/60" strokeWidth={1.5} />
                     </div>
-                  </div>
-                  
-                  {/* NFC Badge */}
-                  {project.nfc_tags?.length > 0 && (
-                    <div className="flex items-center gap-2 px-3 py-2 rounded-full bg-white/5 border border-white/10">
-                      <Wifi className="w-4 h-4 text-white/50" strokeWidth={1.5} />
-                      <span className="text-xs text-white/50">{project.nfc_tags.length} NFC</span>
+                    
+                    {/* Info */}
+                    <div className="flex-1">
+                      <h3 className="text-white/90 font-medium text-lg mb-1">{project.name}</h3>
+                      <div className="flex items-center gap-2 text-white/40 text-sm">
+                        <MapPin className="w-4 h-4" strokeWidth={1.5} />
+                        <span>{project.location || 'No location'}</span>
+                      </div>
                     </div>
-                  )}
-                  
-                  {/* Code */}
-                  <div className="px-4 py-2 rounded-full bg-white/5 border border-white/10">
-                    <span className="text-xs font-mono text-white/50">{project.qr_code}</span>
+                    
+                    {/* NFC Badge */}
+                    {project.nfc_tags?.length > 0 && (
+                      <div className="flex items-center gap-2 px-3 py-2 rounded-full bg-white/5 border border-white/10">
+                        <Wifi className="w-4 h-4 text-white/50" strokeWidth={1.5} />
+                        <span className="text-xs text-white/50">{project.nfc_tags.length} NFC</span>
+                      </div>
+                    )}
+                    
+                    {/* Code */}
+                    {project.qr_code && (
+                      <div className="px-4 py-2 rounded-full bg-white/5 border border-white/10">
+                        <span className="text-xs font-mono text-white/50">{project.qr_code}</span>
+                      </div>
+                    )}
+                    
+                    {/* Status Badge */}
+                    {project.status && (
+                      <div className={`px-3 py-1 rounded-full text-xs font-medium ${
+                        project.status === 'active' 
+                          ? 'bg-green-500/20 text-green-400 border border-green-500/30' 
+                          : 'bg-white/5 text-white/50 border border-white/10'
+                      }`}>
+                        {project.status.toUpperCase()}
+                      </div>
+                    )}
+                    
+                    {/* Delete */}
+                    <motion.button
+                      whileHover={{ scale: 1.1 }}
+                      whileTap={{ scale: 0.9 }}
+                      onClick={(e) => handleDeleteProject(getProjectId(project), e)}
+                      className="btn-icon opacity-0 group-hover:opacity-100 transition-opacity"
+                      data-testid={`delete-project-${getProjectId(project)}`}
+                    >
+                      <Trash2 className="w-4 h-4" strokeWidth={1.5} />
+                    </motion.button>
                   </div>
-                  
-                  {/* Delete */}
-                  <motion.button
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.9 }}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setProjects(projects.filter(p => p.id !== project.id));
-                    }}
-                    className="btn-icon opacity-0 group-hover:opacity-100 transition-opacity"
-                    data-testid={`delete-project-${project.id}`}
-                  >
-                    <Trash2 className="w-4 h-4" strokeWidth={1.5} />
-                  </motion.button>
-                </div>
-              </motion.div>
-            ))}
-
-            {filteredProjects.length === 0 && (
+                </motion.div>
+              ))
+            ) : (
               <div className="text-center py-20">
                 <Building2 className="w-12 h-12 text-white/20 mx-auto mb-4" strokeWidth={1} />
-                <p className="text-white/40">No projects found</p>
+                <p className="text-white/40">
+                  {searchQuery ? 'No projects match your search' : 'No projects found'}
+                </p>
               </div>
             )}
           </div>
@@ -232,10 +298,15 @@ const ProjectsPage = ({ user, onLogout }) => {
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                     onClick={handleAddProject}
-                    className="btn-glass w-full"
+                    disabled={creating}
+                    className="btn-glass w-full flex items-center justify-center gap-2"
                     data-testid="create-project-btn"
                   >
-                    Create Project
+                    {creating ? (
+                      <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                    ) : (
+                      'Create Project'
+                    )}
                   </motion.button>
                 </div>
               </div>
