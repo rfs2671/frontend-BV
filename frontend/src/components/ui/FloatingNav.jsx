@@ -6,8 +6,7 @@ import {
   FolderKanban, 
   Users, 
   ClipboardList, 
-  FileText, 
-  LogOut
+  FileText
 } from 'lucide-react';
 
 const FloatingNav = ({ user, onLogout }) => {
@@ -27,14 +26,14 @@ const FloatingNav = ({ user, onLogout }) => {
       initial={{ y: 100, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-      className="fixed bottom-8 left-1/2 -translate-x-1/2 z-50"
+      className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50"
     >
       <div 
         className="flex items-center gap-1 px-2 py-2 rounded-full"
         style={{
-          background: 'rgba(255, 255, 255, 0.07)',
+          background: 'rgba(255, 255, 255, 0.05)',
           backdropFilter: 'blur(20px)',
-          border: '1px solid rgba(255, 255, 255, 0.1)',
+          border: '1px solid rgba(255, 255, 255, 0.08)',
         }}
       >
         {navItems.map((item) => {
@@ -51,7 +50,7 @@ const FloatingNav = ({ user, onLogout }) => {
                 flex items-center gap-2 px-5 py-3 rounded-full
                 transition-all duration-300
                 ${isActive 
-                  ? 'bg-white/10 text-white/90' 
+                  ? 'bg-white/[0.08] text-white/90' 
                   : 'text-white/40 hover:text-white/60'
                 }
               `}
@@ -63,17 +62,6 @@ const FloatingNav = ({ user, onLogout }) => {
             </motion.button>
           );
         })}
-
-        <div className="w-px h-6 bg-white/10 mx-2" />
-
-        <motion.button
-          onClick={onLogout}
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          className="p-3 rounded-full text-white/35 hover:text-white/60 transition-all"
-        >
-          <LogOut className="w-4 h-4" strokeWidth={1.5} />
-        </motion.button>
       </div>
     </motion.nav>
   );
