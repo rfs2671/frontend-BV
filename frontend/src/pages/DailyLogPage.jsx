@@ -108,22 +108,22 @@ const DailyLogPage = ({ user, onLogout }) => {
         <motion.header
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="sticky top-0 z-40 backdrop-blur-xl bg-black/30 border-b border-white/5"
+          className="sticky top-0 z-40 backdrop-blur-xl bg-[#070710]/80 border-b border-white/[0.05]"
         >
-          <div className="max-w-7xl mx-auto px-6 py-4">
+          <div className="max-w-6xl mx-auto px-6 py-4">
             <div className="flex items-center gap-4">
               <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
                 onClick={() => navigate('/')}
-                className="w-11 h-11 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-white/60 hover:text-white hover:bg-white/10 transition-all"
+                className="w-10 h-10 rounded-xl bg-white/[0.03] border border-white/[0.08] flex items-center justify-center text-white/40 hover:text-white/70 hover:bg-white/[0.06] transition-all"
               >
-                <ArrowLeft className="w-5 h-5" />
+                <ArrowLeft className="w-4 h-4" strokeWidth={1.5} />
               </motion.button>
               
               <div className="flex-1">
-                <h1 className="text-xl font-bold text-white">Super Daily Log</h1>
-                <p className="text-white/40 text-sm">{today}</p>
+                <h1 className="text-lg font-medium text-white">Super Daily Log</h1>
+                <p className="text-white/30 text-xs">{today}</p>
               </div>
               
               <GlowButton
@@ -139,7 +139,7 @@ const DailyLogPage = ({ user, onLogout }) => {
           </div>
         </motion.header>
 
-        <div className="max-w-7xl mx-auto px-6 mt-6 space-y-6">
+        <div className="max-w-6xl mx-auto px-6 mt-6 space-y-4">
           {/* Project Selector */}
           <GlassCard className="p-4" hoverable={false}>
             <button
@@ -147,12 +147,12 @@ const DailyLogPage = ({ user, onLogout }) => {
               className="w-full flex items-center justify-between"
             >
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-orange-500/10 flex items-center justify-center">
-                  <Building2 className="w-5 h-5 text-orange-500" />
+                <div className="w-10 h-10 rounded-xl bg-white/[0.05] border border-white/[0.08] flex items-center justify-center">
+                  <Building2 className="w-4 h-4 text-white/50" strokeWidth={1.5} />
                 </div>
-                <span className="text-white font-semibold">{selectedProject.name}</span>
+                <span className="text-white/80 font-medium text-sm">{selectedProject.name}</span>
               </div>
-              <ChevronDown className={`w-5 h-5 text-white/40 transition-transform ${showProjectPicker ? 'rotate-180' : ''}`} />
+              <ChevronDown className={`w-4 h-4 text-white/30 transition-transform ${showProjectPicker ? 'rotate-180' : ''}`} strokeWidth={1.5} />
             </button>
             
             <AnimatePresence>
@@ -163,7 +163,7 @@ const DailyLogPage = ({ user, onLogout }) => {
                   exit={{ height: 0, opacity: 0 }}
                   className="overflow-hidden"
                 >
-                  <div className="pt-4 mt-4 border-t border-white/10 space-y-2">
+                  <div className="pt-4 mt-4 border-t border-white/[0.06] space-y-2">
                     {projects.map(project => (
                       <button
                         key={project.id}
@@ -171,10 +171,10 @@ const DailyLogPage = ({ user, onLogout }) => {
                           setSelectedProject(project);
                           setShowProjectPicker(false);
                         }}
-                        className={`w-full p-3 rounded-xl text-left transition-all ${
+                        className={`w-full p-3 rounded-xl text-left text-sm transition-all ${
                           selectedProject.id === project.id 
-                            ? 'bg-orange-500/20 text-white' 
-                            : 'bg-white/5 text-white/60 hover:bg-white/10 hover:text-white'
+                            ? 'bg-white/[0.08] text-white' 
+                            : 'bg-white/[0.02] text-white/50 hover:bg-white/[0.05] hover:text-white/80'
                         }`}
                       >
                         {project.name}
@@ -193,15 +193,15 @@ const DailyLogPage = ({ user, onLogout }) => {
               className="w-full flex items-center justify-between"
             >
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-yellow-400/10 flex items-center justify-center">
-                  <WeatherIcon className="w-5 h-5 text-yellow-400" />
+                <div className="w-10 h-10 rounded-xl bg-white/[0.05] border border-white/[0.08] flex items-center justify-center">
+                  <WeatherIcon className="w-4 h-4 text-white/50" strokeWidth={1.5} />
                 </div>
                 <div className="text-left">
-                  <div className="text-white/40 text-xs">Weather Conditions</div>
-                  <div className="text-white font-semibold">{weather || 'Tap to set'}</div>
+                  <div className="text-white/30 text-[10px] tracking-wider uppercase">Weather</div>
+                  <div className="text-white/80 font-medium text-sm">{weather || 'Set weather'}</div>
                 </div>
               </div>
-              <ChevronDown className={`w-5 h-5 text-white/40 transition-transform ${showWeatherPicker ? 'rotate-180' : ''}`} />
+              <ChevronDown className={`w-4 h-4 text-white/30 transition-transform ${showWeatherPicker ? 'rotate-180' : ''}`} strokeWidth={1.5} />
             </button>
             
             <AnimatePresence>
@@ -212,7 +212,7 @@ const DailyLogPage = ({ user, onLogout }) => {
                   exit={{ height: 0, opacity: 0 }}
                   className="overflow-hidden"
                 >
-                  <div className="pt-4 mt-4 border-t border-white/10 grid grid-cols-4 gap-2">
+                  <div className="pt-4 mt-4 border-t border-white/[0.06] grid grid-cols-4 gap-2">
                     {weatherOptions.map(option => {
                       const Icon = option.icon;
                       return (
@@ -224,12 +224,12 @@ const DailyLogPage = ({ user, onLogout }) => {
                           }}
                           className={`p-3 rounded-xl flex flex-col items-center gap-2 transition-all ${
                             weather === option.label 
-                              ? 'bg-orange-500/20 text-white' 
-                              : 'bg-white/5 text-white/60 hover:bg-white/10 hover:text-white'
+                              ? 'bg-white/[0.08] text-white' 
+                              : 'bg-white/[0.02] text-white/40 hover:bg-white/[0.05] hover:text-white/70'
                           }`}
                         >
-                          <Icon className="w-5 h-5" />
-                          <span className="text-xs">{option.label}</span>
+                          <Icon className="w-4 h-4" strokeWidth={1.5} />
+                          <span className="text-[10px]">{option.label}</span>
                         </button>
                       );
                     })}
@@ -242,37 +242,35 @@ const DailyLogPage = ({ user, onLogout }) => {
           {/* Subcontractor Cards */}
           <div>
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-semibold text-white">Subcontractor Cards</h2>
+              <h2 className="text-sm font-medium text-white/50">Subcontractor Cards</h2>
               <GlowButton variant="secondary" size="sm" icon={Plus}>
                 Add
               </GlowButton>
             </div>
 
-            <div className="space-y-4">
+            <div className="space-y-3">
               {subcontractorCards.map((card, index) => (
                 <GlassCard key={index} className="overflow-hidden" hoverable={false}>
-                  {/* Card Header */}
                   <button
                     onClick={() => setExpandedCard(expandedCard === index ? null : index)}
                     className="w-full p-4 flex items-center gap-4"
                   >
-                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center text-white font-bold text-lg">
+                    <div className="w-10 h-10 rounded-xl bg-white/[0.05] border border-white/[0.08] flex items-center justify-center text-white/60 text-xs font-medium">
                       {card.company_name.charAt(0)}
                     </div>
                     <div className="flex-1 text-left">
-                      <div className="text-white font-semibold">{card.company_name}</div>
-                      <div className="text-white/40 text-sm">
+                      <div className="text-white/80 font-medium text-sm">{card.company_name}</div>
+                      <div className="text-white/30 text-xs">
                         {card.worker_count} workers • {card.photos.length} photos
                       </div>
                     </div>
                     {expandedCard === index ? (
-                      <ChevronUp className="w-5 h-5 text-white/40" />
+                      <ChevronUp className="w-4 h-4 text-white/30" strokeWidth={1.5} />
                     ) : (
-                      <ChevronDown className="w-5 h-5 text-white/40" />
+                      <ChevronDown className="w-4 h-4 text-white/30" strokeWidth={1.5} />
                     )}
                   </button>
 
-                  {/* Expanded Content */}
                   <AnimatePresence>
                     {expandedCard === index && (
                       <motion.div
@@ -281,21 +279,20 @@ const DailyLogPage = ({ user, onLogout }) => {
                         exit={{ height: 0, opacity: 0 }}
                         className="overflow-hidden"
                       >
-                        <div className="p-4 pt-0 space-y-4 border-t border-white/10">
+                        <div className="p-4 pt-0 space-y-4 border-t border-white/[0.06]">
                           {/* Photos */}
                           <div>
-                            <div className="text-white/40 text-sm mb-2">Photos</div>
+                            <div className="text-white/30 text-xs mb-2">Photos</div>
                             <div className="flex gap-2">
-                              <button className="w-16 h-16 rounded-xl bg-white/5 border-2 border-dashed border-white/20 flex flex-col items-center justify-center text-white/40 hover:text-orange-500 hover:border-orange-500/50 transition-all">
-                                <Camera className="w-5 h-5" />
-                                <span className="text-[10px] mt-1">Add</span>
+                              <button className="w-14 h-14 rounded-xl bg-white/[0.03] border border-dashed border-white/[0.15] flex flex-col items-center justify-center text-white/30 hover:text-white/50 hover:border-white/[0.25] transition-all">
+                                <Camera className="w-4 h-4" strokeWidth={1.5} />
                               </button>
                             </div>
                           </div>
 
                           {/* Work Description */}
                           <div>
-                            <div className="text-white/40 text-sm mb-2">Work Performed Today</div>
+                            <div className="text-white/30 text-xs mb-2">Work Performed Today</div>
                             <div className="relative">
                               <textarea
                                 value={card.work_description}
@@ -305,62 +302,49 @@ const DailyLogPage = ({ user, onLogout }) => {
                                   setSubcontractorCards(updated);
                                 }}
                                 placeholder="Describe work performed..."
-                                className="w-full bg-white/[0.03] border border-white/10 rounded-xl p-4 pr-12 text-white placeholder-white/30 min-h-[80px] resize-none focus:outline-none focus:border-orange-500/50 transition-all"
+                                className="w-full bg-white/[0.03] border border-white/[0.08] rounded-xl p-4 pr-12 text-white text-sm placeholder-white/20 min-h-[80px] resize-none focus:outline-none focus:border-white/[0.15] transition-all"
                               />
-                              <button className="absolute right-3 top-3 w-8 h-8 rounded-lg bg-orange-500/20 flex items-center justify-center text-orange-500">
-                                <Mic className="w-4 h-4" />
+                              <button className="absolute right-3 top-3 w-8 h-8 rounded-lg bg-white/[0.05] flex items-center justify-center text-white/40">
+                                <Mic className="w-4 h-4" strokeWidth={1.5} />
                               </button>
                             </div>
                           </div>
 
                           {/* Inspection */}
                           <div>
-                            <div className="text-white/40 text-sm mb-2">Site Inspection</div>
+                            <div className="text-white/30 text-xs mb-2">Site Inspection</div>
                             <div className="grid grid-cols-2 gap-3">
                               <button
                                 onClick={() => toggleInspection(index, 'cleanliness')}
-                                className={`p-3 rounded-xl flex items-center justify-center gap-2 transition-all ${
+                                className={`p-3 rounded-xl flex items-center justify-center gap-2 transition-all border ${
                                   card.inspection.cleanliness === 'pass'
-                                    ? 'bg-green-400/10 text-green-400 border border-green-400/30'
-                                    : 'bg-red-400/10 text-red-400 border border-red-400/30'
+                                    ? 'bg-white/[0.05] text-white/70 border-white/[0.15]'
+                                    : 'bg-white/[0.02] text-white/30 border-white/[0.08]'
                                 }`}
                               >
                                 {card.inspection.cleanliness === 'pass' ? (
-                                  <Check className="w-4 h-4" />
+                                  <Check className="w-4 h-4" strokeWidth={1.5} />
                                 ) : (
-                                  <X className="w-4 h-4" />
+                                  <X className="w-4 h-4" strokeWidth={1.5} />
                                 )}
-                                <span className="text-sm font-medium">Cleanliness</span>
+                                <span className="text-xs font-medium">Cleanliness</span>
                               </button>
                               <button
                                 onClick={() => toggleInspection(index, 'safety')}
-                                className={`p-3 rounded-xl flex items-center justify-center gap-2 transition-all ${
+                                className={`p-3 rounded-xl flex items-center justify-center gap-2 transition-all border ${
                                   card.inspection.safety === 'pass'
-                                    ? 'bg-green-400/10 text-green-400 border border-green-400/30'
-                                    : 'bg-red-400/10 text-red-400 border border-red-400/30'
+                                    ? 'bg-white/[0.05] text-white/70 border-white/[0.15]'
+                                    : 'bg-white/[0.02] text-white/30 border-white/[0.08]'
                                 }`}
                               >
                                 {card.inspection.safety === 'pass' ? (
-                                  <Check className="w-4 h-4" />
+                                  <Check className="w-4 h-4" strokeWidth={1.5} />
                                 ) : (
-                                  <X className="w-4 h-4" />
+                                  <X className="w-4 h-4" strokeWidth={1.5} />
                                 )}
-                                <span className="text-sm font-medium">Safety</span>
+                                <span className="text-xs font-medium">Safety</span>
                               </button>
                             </div>
-                            
-                            {(card.inspection.cleanliness === 'fail' || card.inspection.safety === 'fail') && (
-                              <textarea
-                                value={card.inspection.comments || ''}
-                                onChange={(e) => {
-                                  const updated = [...subcontractorCards];
-                                  updated[index].inspection.comments = e.target.value;
-                                  setSubcontractorCards(updated);
-                                }}
-                                placeholder="Add comments about the issues..."
-                                className="w-full mt-3 bg-white/[0.03] border border-white/10 rounded-xl p-4 text-white placeholder-white/30 min-h-[60px] resize-none focus:outline-none focus:border-orange-500/50 transition-all"
-                              />
-                            )}
                           </div>
                         </div>
                       </motion.div>
@@ -373,19 +357,19 @@ const DailyLogPage = ({ user, onLogout }) => {
 
           {/* Notes */}
           <div>
-            <h2 className="text-lg font-semibold text-white mb-4">Additional Notes</h2>
+            <h2 className="text-sm font-medium text-white/50 mb-3">Additional Notes</h2>
             <textarea
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
               placeholder="Any additional notes for today..."
-              className="w-full bg-white/[0.03] border border-white/10 rounded-2xl p-4 text-white placeholder-white/30 min-h-[120px] resize-none focus:outline-none focus:border-orange-500/50 transition-all"
+              className="w-full bg-white/[0.03] border border-white/[0.08] rounded-2xl p-4 text-white text-sm placeholder-white/20 min-h-[100px] resize-none focus:outline-none focus:border-white/[0.15] transition-all"
             />
           </div>
 
           {/* Submit Button */}
           <GlowButton
             variant="primary"
-            size="xl"
+            size="lg"
             fullWidth
             icon={Send}
             data-testid="submit-daily-log-btn"
