@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Mail, Lock, Eye, EyeOff, ArrowRight, LayoutGrid } from 'lucide-react';
 import AnimatedBackground from '../components/ui/AnimatedBackground';
+import { useToast } from '../components/ui/Toast';
+import { authAPI, setToken, setStoredUser } from '../utils/api';
 
 const LoginPage = ({ onLogin }) => {
   const [email, setEmail] = useState('');
@@ -9,6 +11,7 @@ const LoginPage = ({ onLogin }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const toast = useToast();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -20,19 +23,30 @@ const LoginPage = ({ onLogin }) => {
     setLoading(true);
     setError('');
 
-    setTimeout(() => {
-      if (email === 'admin@blueview.com' && password === 'BlueviewAdmin123') {
-        onLogin({
-          id: '1',
-          email: email,
-          name: 'Admin User',
-          role: 'admin',
-        });
-      } else {
-        setError('Invalid credentials');
+    try {
+      // Call login API
+      const loginResponse = await authAPI.login(email, password);
+      
+      // Store token
+      if (loginResponse.access_token) {
+        setToken(loginResponse.access_token);
       }
+
+      // Fetch user profile
+      const userData = await authAPI.getMe();
+      
+      // Store user and redirect
+      setStoredUser(userData);
+      toast.success('Welcome back!', `Logged in as ${userData.full_name || userData.email}`);
+      onLogin(userData);
+      
+    } catch (err) {
+      const errorMessage = err.message || 'Invalid credentials';
+      setError(errorMessage);
+      toast.error('Login Failed', errorMessage);
+    } finally {
       setLoading(false);
-    }, 1500);
+    }
   };
 
   return (
@@ -86,8 +100,9 @@ const LoginPage = ({ onLogin }) => {
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    placeholder="admin@blueview.com"
+                    placeholder="test@example.com"
                     className="input-glass pl-14"
+                    data-testid="login-email-input"
                   />
                 </div>
               </div>
@@ -103,6 +118,7 @@ const LoginPage = ({ onLogin }) => {
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="Enter password"
                     className="input-glass pl-14 pr-14"
+                    data-testid="login-password-input"
                   />
                   <button
                     type="button"
@@ -121,7 +137,7 @@ const LoginPage = ({ onLogin }) => {
                     initial={{ opacity: 0, y: -10 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -10 }}
-                    className="p-4 rounded-2xl bg-white/5 border border-white/10 text-white/60 text-sm"
+                    className="p-4 rounded-2xl bg-red-500/10 border border-red-500/20 text-red-400/80 text-sm"
                   >
                     {error}
                   </motion.div>
@@ -158,7 +174,7 @@ const LoginPage = ({ onLogin }) => {
           className="mt-8 text-center"
         >
           <p className="text-white/30 text-sm">
-            Demo: <span className="text-white/50">admin@blueview.com</span> / <span className="text-white/50">BlueviewAdmin123</span>
+            Demo: <span className="text-white/50">test@example.com</span> / <span className="text-white/50">testpassword</span>
           </p>
         </motion.div>
       </div>

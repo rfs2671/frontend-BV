@@ -1,5 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { ToastProvider } from './components/ui/Toast';
+import { authAPI, getToken, getStoredUser, setStoredUser, clearAuth } from './utils/api';
 
 // Pages
 import LoginPage from './pages/LoginPage';
@@ -13,84 +15,101 @@ function App() {
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Check for stored auth on mount
+  // Check for stored auth on mount and validate token
   useEffect(() => {
-    const storedUser = localStorage.getItem('blueview_user');
-    if (storedUser) {
-      try {
-        setUser(JSON.parse(storedUser));
-      } catch (e) {
-        localStorage.removeItem('blueview_user');
+    const validateSession = async () => {
+      const token = getToken();
+      const storedUser = getStoredUser();
+
+      if (token && storedUser) {
+        try {
+          // Validate token by fetching current user
+          const userData = await authAPI.getMe();
+          setUser(userData);
+          setStoredUser(userData);
+        } catch (error) {
+          // Token invalid or expired
+          console.error('Session validation failed:', error);
+          clearAuth();
+          setUser(null);
+        }
       }
-    }
-    setIsLoading(false);
+      setIsLoading(false);
+    };
+
+    validateSession();
   }, []);
 
-  const handleLogin = (userData) => {
+  const handleLogin = useCallback((userData) => {
     setUser(userData);
-    localStorage.setItem('blueview_user', JSON.stringify(userData));
-  };
+    setStoredUser(userData);
+  }, []);
 
-  const handleLogout = () => {
+  const handleLogout = useCallback(() => {
+    authAPI.logout();
     setUser(null);
-    localStorage.removeItem('blueview_user');
-  };
+  }, []);
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-[#070710] flex items-center justify-center">
-        <div className="w-8 h-8 border border-white/20 border-t-white/60 rounded-full animate-spin" />
+      <div className="min-h-screen bg-gradient-to-b from-[#050a12] via-[#0A1929] to-[#050a12] flex items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <div className="w-10 h-10 border border-white/20 border-t-white/60 rounded-full animate-spin" />
+          <p className="text-white/40 text-sm tracking-wider">LOADING</p>
+        </div>
       </div>
     );
   }
 
   return (
-    <BrowserRouter>
-      <Routes>
-        {/* Public routes */}
-        <Route 
-          path="/login" 
-          element={
-            user ? <Navigate to="/" replace /> : <LoginPage onLogin={handleLogin} />
-          } 
-        />
+    <ToastProvider>
+      <BrowserRouter>
+        <Routes>
+          {/* Public routes */}
+          <Route 
+            path="/login" 
+            element={
+              user ? <Navigate to="/" replace /> : <LoginPage onLogin={handleLogin} />
+            } 
+          />
 
-        {/* Protected routes */}
-        <Route 
-          path="/" 
-          element={
-            user ? <Dashboard user={user} onLogout={handleLogout} /> : <Navigate to="/login" replace />
-          } 
-        />
-        <Route 
-          path="/projects" 
-          element={
-            user ? <ProjectsPage user={user} onLogout={handleLogout} /> : <Navigate to="/login" replace />
-          } 
-        />
-        <Route 
-          path="/workers" 
-          element={
-            user ? <WorkersPage user={user} onLogout={handleLogout} /> : <Navigate to="/login" replace />
-          } 
-        />
-        <Route 
-          path="/daily-log" 
-          element={
-            user ? <DailyLogPage user={user} onLogout={handleLogout} /> : <Navigate to="/login" replace />
-          } 
-        />
-        <Route 
-          path="/reports" 
-          element={
-            user ? <ReportsPage user={user} onLogout={handleLogout} /> : <Navigate to="/login" replace />
-          } 
-        />
+          {/* Protected routes */}
+          <Route 
+            path="/" 
+            element={
+              user ? <Dashboard user={user} onLogout={handleLogout} /> : <Navigate to="/login" replace />
+            } 
+          />
+          <Route 
+            path="/projects" 
+            element={
+              user ? <ProjectsPage user={user} onLogout={handleLogout} /> : <Navigate to="/login" replace />
+            } 
+          />
+          <Route 
+            path="/workers" 
+            element={
+              user ? <WorkersPage user={user} onLogout={handleLogout} /> : <Navigate to="/login" replace />
+            } 
+          />
+          <Route 
+            path="/daily-log" 
+            element={
+              user ? <DailyLogPage user={user} onLogout={handleLogout} /> : <Navigate to="/login" replace />
+            } 
+          />
+          <Route 
+            path="/reports" 
+            element={
+              user ? <ReportsPage user={user} onLogout={handleLogout} /> : <Navigate to="/login" replace />
+            } 
+          />
 
-        {/* Catch all - redirect to home */}
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
-    </BrowserRouter>
+          {/* Catch all - redirect to home */}
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </BrowserRouter>
+    </ToastProvider>
   );
 }
 
