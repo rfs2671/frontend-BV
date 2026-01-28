@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Mail, Lock, Eye, EyeOff, ArrowRight, LayoutGrid } from 'lucide-react';
 import AnimatedBackground from '../components/ui/AnimatedBackground';
 import { useToast } from '../components/ui/Toast';
-import { authAPI, setToken, setStoredUser } from '../utils/api';
+import { authAPI, setStoredUser } from '../utils/api';
 
 const LoginPage = ({ onLogin }) => {
   const [email, setEmail] = useState('');
