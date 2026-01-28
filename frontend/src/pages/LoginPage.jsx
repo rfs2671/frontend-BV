@@ -166,7 +166,7 @@ const LoginPage = ({ onLogin }) => {
           </div>
         </motion.div>
 
-        {/* Demo Credentials */}
+        {/* Login Info */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -174,7 +174,7 @@ const LoginPage = ({ onLogin }) => {
           className="mt-8 text-center"
         >
           <p className="text-white/30 text-sm">
-            Demo: <span className="text-white/50">test@example.com</span> / <span className="text-white/50">testpassword</span>
+            Sign in with your Blueview account
           </p>
         </motion.div>
       </div>

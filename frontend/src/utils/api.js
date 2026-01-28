@@ -3,7 +3,7 @@
  * Handles all API requests with JWT authentication
  */
 
-const API_BASE_URL = 'https://blueview2-production.up.railway.app';
+const API_BASE_URL = process.env.REACT_APP_API_URL || 'https://blueview2-production.up.railway.app';
 
 // Token management
 export const getToken = () => localStorage.getItem('blueview_token');
