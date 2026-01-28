@@ -16,15 +16,13 @@ import {
   Mic,
   Check,
   X,
-  Upload,
   Send,
-  Building2
+  Building2,
+  LogOut
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import AnimatedBackground from '../components/ui/AnimatedBackground';
 import FloatingNav from '../components/ui/FloatingNav';
-import GlassCard from '../components/ui/GlassCard';
-import GlowButton from '../components/ui/GlowButton';
 
 const DailyLogPage = ({ user, onLogout }) => {
   const navigate = useNavigate();
@@ -57,179 +55,145 @@ const DailyLogPage = ({ user, onLogout }) => {
     { 
       company_name: 'Elite Electric Co',
       worker_count: 4,
-      photos: [],
-      work_description: 'Completed wiring on floors 3-5. Installed main panel boxes.',
+      work_description: 'Completed wiring on floors 3-5.',
       inspection: { cleanliness: 'pass', safety: 'pass' }
     },
     { 
       company_name: 'Precision Plumbing',
       worker_count: 3,
-      photos: [],
-      work_description: 'Installed water lines in east wing bathrooms.',
-      inspection: { cleanliness: 'pass', safety: 'fail', comments: 'Safety barriers need reinforcement' }
+      work_description: 'Installed water lines in east wing.',
+      inspection: { cleanliness: 'pass', safety: 'fail' }
     },
   ]);
 
   const toggleInspection = (cardIndex, field) => {
     const updated = [...subcontractorCards];
-    updated[cardIndex].inspection[field] = 
-      updated[cardIndex].inspection[field] === 'pass' ? 'fail' : 'pass';
+    updated[cardIndex].inspection[field] = updated[cardIndex].inspection[field] === 'pass' ? 'fail' : 'pass';
     setSubcontractorCards(updated);
   };
 
-  const today = new Date().toLocaleDateString('en-US', {
-    weekday: 'long',
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric'
-  });
+  const today = new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
+  const WeatherIcon = weatherOptions.find(w => w.label === weather)?.icon || Sun;
 
   const handleSave = () => {
     setSaving(true);
     setTimeout(() => {
       setSaving(false);
-      alert('Daily log saved successfully!');
+      alert('Daily log saved!');
     }, 1500);
   };
 
-  const getWeatherIcon = () => {
-    const option = weatherOptions.find(w => w.label === weather);
-    return option?.icon || Sun;
-  };
-
-  const WeatherIcon = getWeatherIcon();
-
   return (
-    <div className="min-h-screen relative pb-32">
+    <div className="min-h-screen relative">
       <AnimatedBackground />
       
-      <div className="relative z-10">
+      <div className="relative z-10 min-h-screen">
         {/* Header */}
-        <motion.header
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="sticky top-0 z-40 backdrop-blur-xl bg-[#070710]/80 border-b border-white/[0.05]"
-        >
-          <div className="max-w-6xl mx-auto px-6 py-4">
-            <div className="flex items-center gap-4">
-              <motion.button
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                onClick={() => navigate('/')}
-                className="w-10 h-10 rounded-xl bg-white/[0.03] border border-white/[0.08] flex items-center justify-center text-white/40 hover:text-white/70 hover:bg-white/[0.06] transition-all"
-              >
-                <ArrowLeft className="w-4 h-4" strokeWidth={1.5} />
-              </motion.button>
-              
-              <div className="flex-1">
-                <h1 className="text-lg font-medium text-white">Super Daily Log</h1>
-                <p className="text-white/30 text-xs">{today}</p>
-              </div>
-              
-              <GlowButton
-                variant="primary"
-                size="md"
-                icon={Upload}
-                onClick={handleSave}
-                loading={saving}
-              >
-                Save
-              </GlowButton>
-            </div>
-          </div>
-        </motion.header>
-
-        <div className="max-w-6xl mx-auto px-6 mt-6 space-y-4">
-          {/* Project Selector */}
-          <GlassCard className="p-4" hoverable={false}>
-            <button
-              onClick={() => setShowProjectPicker(!showProjectPicker)}
-              className="w-full flex items-center justify-between"
+        <header className="px-8 py-6 flex items-center justify-between border-b border-white/[0.08]">
+          <div className="flex items-center gap-4">
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => navigate('/')}
+              className="btn-icon"
             >
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-white/[0.05] border border-white/[0.08] flex items-center justify-center">
-                  <Building2 className="w-4 h-4 text-white/50" strokeWidth={1.5} />
+              <ArrowLeft className="w-5 h-5" strokeWidth={1.5} />
+            </motion.button>
+            <span className="text-sm font-medium tracking-[0.2em] text-white/50">BLUEVIEW</span>
+          </div>
+          
+          <button onClick={onLogout} className="btn-icon">
+            <LogOut className="w-5 h-5" strokeWidth={1.5} />
+          </button>
+        </header>
+
+        <div className="px-8 pt-8 pb-36">
+          {/* Title */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mb-10"
+          >
+            <p className="text-label mb-3">Super</p>
+            <h1 
+              className="text-5xl md:text-6xl font-extralight text-white tracking-tight mb-2"
+              style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif' }}
+            >
+              Daily Log
+            </h1>
+            <p className="text-white/40 font-light">{today}</p>
+          </motion.div>
+
+          {/* Project Selector */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+            className="stat-card p-5 mb-4"
+          >
+            <button onClick={() => setShowProjectPicker(!showProjectPicker)} className="w-full flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                <div className="icon-pod">
+                  <Building2 className="w-5 h-5 text-white/60" strokeWidth={1.5} />
                 </div>
-                <span className="text-white/80 font-medium text-sm">{selectedProject.name}</span>
+                <span className="text-white/80 font-medium">{selectedProject.name}</span>
               </div>
-              <ChevronDown className={`w-4 h-4 text-white/30 transition-transform ${showProjectPicker ? 'rotate-180' : ''}`} strokeWidth={1.5} />
+              <ChevronDown className={`w-5 h-5 text-white/40 transition-transform ${showProjectPicker ? 'rotate-180' : ''}`} strokeWidth={1.5} />
             </button>
             
             <AnimatePresence>
               {showProjectPicker && (
-                <motion.div
-                  initial={{ height: 0, opacity: 0 }}
-                  animate={{ height: 'auto', opacity: 1 }}
-                  exit={{ height: 0, opacity: 0 }}
-                  className="overflow-hidden"
-                >
-                  <div className="pt-4 mt-4 border-t border-white/[0.06] space-y-2">
-                    {projects.map(project => (
+                <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden">
+                  <div className="pt-4 mt-4 border-t border-white/10 space-y-2">
+                    {projects.map(p => (
                       <button
-                        key={project.id}
-                        onClick={() => {
-                          setSelectedProject(project);
-                          setShowProjectPicker(false);
-                        }}
-                        className={`w-full p-3 rounded-xl text-left text-sm transition-all ${
-                          selectedProject.id === project.id 
-                            ? 'bg-white/[0.08] text-white' 
-                            : 'bg-white/[0.02] text-white/50 hover:bg-white/[0.05] hover:text-white/80'
-                        }`}
+                        key={p.id}
+                        onClick={() => { setSelectedProject(p); setShowProjectPicker(false); }}
+                        className={`w-full p-3 rounded-xl text-left transition-all ${selectedProject.id === p.id ? 'bg-white/10 text-white' : 'text-white/50 hover:bg-white/5'}`}
                       >
-                        {project.name}
+                        {p.name}
                       </button>
                     ))}
                   </div>
                 </motion.div>
               )}
             </AnimatePresence>
-          </GlassCard>
+          </motion.div>
 
-          {/* Weather Card */}
-          <GlassCard className="p-4" hoverable={false}>
-            <button
-              onClick={() => setShowWeatherPicker(!showWeatherPicker)}
-              className="w-full flex items-center justify-between"
-            >
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-white/[0.05] border border-white/[0.08] flex items-center justify-center">
-                  <WeatherIcon className="w-4 h-4 text-white/50" strokeWidth={1.5} />
+          {/* Weather */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.15 }}
+            className="stat-card p-5 mb-8"
+          >
+            <button onClick={() => setShowWeatherPicker(!showWeatherPicker)} className="w-full flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                <div className="icon-pod">
+                  <WeatherIcon className="w-5 h-5 text-white/60" strokeWidth={1.5} />
                 </div>
                 <div className="text-left">
-                  <div className="text-white/30 text-[10px] tracking-wider uppercase">Weather</div>
-                  <div className="text-white/80 font-medium text-sm">{weather || 'Set weather'}</div>
+                  <div className="text-label mb-1">Weather</div>
+                  <div className="text-white/80 font-medium">{weather}</div>
                 </div>
               </div>
-              <ChevronDown className={`w-4 h-4 text-white/30 transition-transform ${showWeatherPicker ? 'rotate-180' : ''}`} strokeWidth={1.5} />
+              <ChevronDown className={`w-5 h-5 text-white/40 transition-transform ${showWeatherPicker ? 'rotate-180' : ''}`} strokeWidth={1.5} />
             </button>
             
             <AnimatePresence>
               {showWeatherPicker && (
-                <motion.div
-                  initial={{ height: 0, opacity: 0 }}
-                  animate={{ height: 'auto', opacity: 1 }}
-                  exit={{ height: 0, opacity: 0 }}
-                  className="overflow-hidden"
-                >
-                  <div className="pt-4 mt-4 border-t border-white/[0.06] grid grid-cols-4 gap-2">
-                    {weatherOptions.map(option => {
-                      const Icon = option.icon;
+                <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden">
+                  <div className="pt-4 mt-4 border-t border-white/10 grid grid-cols-4 gap-2">
+                    {weatherOptions.map(opt => {
+                      const Icon = opt.icon;
                       return (
                         <button
-                          key={option.label}
-                          onClick={() => {
-                            setWeather(option.label);
-                            setShowWeatherPicker(false);
-                          }}
-                          className={`p-3 rounded-xl flex flex-col items-center gap-2 transition-all ${
-                            weather === option.label 
-                              ? 'bg-white/[0.08] text-white' 
-                              : 'bg-white/[0.02] text-white/40 hover:bg-white/[0.05] hover:text-white/70'
-                          }`}
+                          key={opt.label}
+                          onClick={() => { setWeather(opt.label); setShowWeatherPicker(false); }}
+                          className={`p-3 rounded-xl flex flex-col items-center gap-2 transition-all ${weather === opt.label ? 'bg-white/10 text-white' : 'text-white/40 hover:bg-white/5'}`}
                         >
-                          <Icon className="w-4 h-4" strokeWidth={1.5} />
-                          <span className="text-[10px]">{option.label}</span>
+                          <Icon className="w-5 h-5" strokeWidth={1.5} />
+                          <span className="text-xs">{opt.label}</span>
                         </button>
                       );
                     })}
@@ -237,62 +201,53 @@ const DailyLogPage = ({ user, onLogout }) => {
                 </motion.div>
               )}
             </AnimatePresence>
-          </GlassCard>
+          </motion.div>
 
           {/* Subcontractor Cards */}
-          <div>
+          <div className="mb-8">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-sm font-medium text-white/50">Subcontractor Cards</h2>
-              <GlowButton variant="secondary" size="sm" icon={Plus}>
+              <p className="text-label">Subcontractor Cards</p>
+              <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} className="btn-glass text-sm flex items-center gap-2">
+                <Plus className="w-4 h-4" strokeWidth={1.5} />
                 Add
-              </GlowButton>
+              </motion.button>
             </div>
-
+            
             <div className="space-y-3">
               {subcontractorCards.map((card, index) => (
-                <GlassCard key={index} className="overflow-hidden" hoverable={false}>
-                  <button
-                    onClick={() => setExpandedCard(expandedCard === index ? null : index)}
-                    className="w-full p-4 flex items-center gap-4"
-                  >
-                    <div className="w-10 h-10 rounded-xl bg-white/[0.05] border border-white/[0.08] flex items-center justify-center text-white/60 text-xs font-medium">
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.2 + index * 0.05 }}
+                  className="stat-card overflow-hidden"
+                >
+                  <button onClick={() => setExpandedCard(expandedCard === index ? null : index)} className="w-full p-5 flex items-center gap-4">
+                    <div className="w-12 h-12 rounded-full bg-white/10 border border-white/20 flex items-center justify-center text-white/60 font-medium">
                       {card.company_name.charAt(0)}
                     </div>
                     <div className="flex-1 text-left">
-                      <div className="text-white/80 font-medium text-sm">{card.company_name}</div>
-                      <div className="text-white/30 text-xs">
-                        {card.worker_count} workers • {card.photos.length} photos
-                      </div>
+                      <div className="text-white/80 font-medium">{card.company_name}</div>
+                      <div className="text-white/40 text-sm">{card.worker_count} workers</div>
                     </div>
-                    {expandedCard === index ? (
-                      <ChevronUp className="w-4 h-4 text-white/30" strokeWidth={1.5} />
-                    ) : (
-                      <ChevronDown className="w-4 h-4 text-white/30" strokeWidth={1.5} />
-                    )}
+                    {expandedCard === index ? <ChevronUp className="w-5 h-5 text-white/40" strokeWidth={1.5} /> : <ChevronDown className="w-5 h-5 text-white/40" strokeWidth={1.5} />}
                   </button>
-
+                  
                   <AnimatePresence>
                     {expandedCard === index && (
-                      <motion.div
-                        initial={{ height: 0, opacity: 0 }}
-                        animate={{ height: 'auto', opacity: 1 }}
-                        exit={{ height: 0, opacity: 0 }}
-                        className="overflow-hidden"
-                      >
-                        <div className="p-4 pt-0 space-y-4 border-t border-white/[0.06]">
+                      <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden">
+                        <div className="p-5 pt-0 border-t border-white/10 space-y-4">
                           {/* Photos */}
                           <div>
-                            <div className="text-white/30 text-xs mb-2">Photos</div>
-                            <div className="flex gap-2">
-                              <button className="w-14 h-14 rounded-xl bg-white/[0.03] border border-dashed border-white/[0.15] flex flex-col items-center justify-center text-white/30 hover:text-white/50 hover:border-white/[0.25] transition-all">
-                                <Camera className="w-4 h-4" strokeWidth={1.5} />
-                              </button>
-                            </div>
+                            <p className="text-label mb-3">Photos</p>
+                            <button className="w-16 h-16 rounded-xl bg-white/5 border border-dashed border-white/20 flex flex-col items-center justify-center text-white/30 hover:text-white/50 transition-colors">
+                              <Camera className="w-5 h-5" strokeWidth={1.5} />
+                            </button>
                           </div>
-
+                          
                           {/* Work Description */}
                           <div>
-                            <div className="text-white/30 text-xs mb-2">Work Performed Today</div>
+                            <p className="text-label mb-3">Work Performed</p>
                             <div className="relative">
                               <textarea
                                 value={card.work_description}
@@ -301,48 +256,32 @@ const DailyLogPage = ({ user, onLogout }) => {
                                   updated[index].work_description = e.target.value;
                                   setSubcontractorCards(updated);
                                 }}
-                                placeholder="Describe work performed..."
-                                className="w-full bg-white/[0.03] border border-white/[0.08] rounded-xl p-4 pr-12 text-white text-sm placeholder-white/20 min-h-[80px] resize-none focus:outline-none focus:border-white/[0.15] transition-all"
+                                className="input-glass min-h-[80px] pr-14 resize-none"
+                                placeholder="Describe work..."
                               />
-                              <button className="absolute right-3 top-3 w-8 h-8 rounded-lg bg-white/[0.05] flex items-center justify-center text-white/40">
+                              <button className="absolute right-4 top-4 btn-icon w-10 h-10">
                                 <Mic className="w-4 h-4" strokeWidth={1.5} />
                               </button>
                             </div>
                           </div>
-
+                          
                           {/* Inspection */}
                           <div>
-                            <div className="text-white/30 text-xs mb-2">Site Inspection</div>
+                            <p className="text-label mb-3">Inspection</p>
                             <div className="grid grid-cols-2 gap-3">
                               <button
                                 onClick={() => toggleInspection(index, 'cleanliness')}
-                                className={`p-3 rounded-xl flex items-center justify-center gap-2 transition-all border ${
-                                  card.inspection.cleanliness === 'pass'
-                                    ? 'bg-white/[0.05] text-white/70 border-white/[0.15]'
-                                    : 'bg-white/[0.02] text-white/30 border-white/[0.08]'
-                                }`}
+                                className={`p-4 rounded-xl flex items-center justify-center gap-2 transition-all border ${card.inspection.cleanliness === 'pass' ? 'bg-white/10 border-white/20 text-white' : 'bg-white/5 border-white/10 text-white/40'}`}
                               >
-                                {card.inspection.cleanliness === 'pass' ? (
-                                  <Check className="w-4 h-4" strokeWidth={1.5} />
-                                ) : (
-                                  <X className="w-4 h-4" strokeWidth={1.5} />
-                                )}
-                                <span className="text-xs font-medium">Cleanliness</span>
+                                {card.inspection.cleanliness === 'pass' ? <Check className="w-4 h-4" strokeWidth={1.5} /> : <X className="w-4 h-4" strokeWidth={1.5} />}
+                                <span className="text-sm font-medium">Cleanliness</span>
                               </button>
                               <button
                                 onClick={() => toggleInspection(index, 'safety')}
-                                className={`p-3 rounded-xl flex items-center justify-center gap-2 transition-all border ${
-                                  card.inspection.safety === 'pass'
-                                    ? 'bg-white/[0.05] text-white/70 border-white/[0.15]'
-                                    : 'bg-white/[0.02] text-white/30 border-white/[0.08]'
-                                }`}
+                                className={`p-4 rounded-xl flex items-center justify-center gap-2 transition-all border ${card.inspection.safety === 'pass' ? 'bg-white/10 border-white/20 text-white' : 'bg-white/5 border-white/10 text-white/40'}`}
                               >
-                                {card.inspection.safety === 'pass' ? (
-                                  <Check className="w-4 h-4" strokeWidth={1.5} />
-                                ) : (
-                                  <X className="w-4 h-4" strokeWidth={1.5} />
-                                )}
-                                <span className="text-xs font-medium">Safety</span>
+                                {card.inspection.safety === 'pass' ? <Check className="w-4 h-4" strokeWidth={1.5} /> : <X className="w-4 h-4" strokeWidth={1.5} />}
+                                <span className="text-sm font-medium">Safety</span>
                               </button>
                             </div>
                           </div>
@@ -350,32 +289,40 @@ const DailyLogPage = ({ user, onLogout }) => {
                       </motion.div>
                     )}
                   </AnimatePresence>
-                </GlassCard>
+                </motion.div>
               ))}
             </div>
           </div>
 
           {/* Notes */}
-          <div>
-            <h2 className="text-sm font-medium text-white/50 mb-3">Additional Notes</h2>
+          <div className="mb-8">
+            <p className="text-label mb-4">Additional Notes</p>
             <textarea
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
-              placeholder="Any additional notes for today..."
-              className="w-full bg-white/[0.03] border border-white/[0.08] rounded-2xl p-4 text-white text-sm placeholder-white/20 min-h-[100px] resize-none focus:outline-none focus:border-white/[0.15] transition-all"
+              className="input-glass min-h-[100px] resize-none"
+              placeholder="Any additional notes..."
             />
           </div>
 
-          {/* Submit Button */}
-          <GlowButton
-            variant="primary"
-            size="lg"
-            fullWidth
-            icon={Send}
+          {/* Submit */}
+          <motion.button
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            onClick={handleSave}
+            disabled={saving}
+            className="btn-glass w-full flex items-center justify-center gap-3"
             data-testid="submit-daily-log-btn"
           >
-            Submit Daily Log
-          </GlowButton>
+            {saving ? (
+              <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+            ) : (
+              <>
+                <Send className="w-5 h-5" strokeWidth={1.5} />
+                <span>Submit Daily Log</span>
+              </>
+            )}
+          </motion.button>
         </div>
       </div>
 
