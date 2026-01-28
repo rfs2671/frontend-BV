@@ -1,53 +1,96 @@
-import { useEffect } from "react";
-import "@/App.css";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import axios from "axios";
+import React, { useState, useEffect } from 'react';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-const API = `${BACKEND_URL}/api`;
-
-const Home = () => {
-  const helloWorldApi = async () => {
-    try {
-      const response = await axios.get(`${API}/`);
-      console.log(response.data.message);
-    } catch (e) {
-      console.error(e, `errored out requesting / api`);
-    }
-  };
-
-  useEffect(() => {
-    helloWorldApi();
-  }, []);
-
-  return (
-    <div>
-      <header className="App-header">
-        <a
-          className="App-link"
-          href="https://emergent.sh"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <img src="https://avatars.githubusercontent.com/in/1201222?s=120&u=2686cf91179bbafbc7a71bfbc43004cf9ae1acea&v=4" />
-        </a>
-        <p className="mt-5">Building something incredible ~!</p>
-      </header>
-    </div>
-  );
-};
+// Pages
+import LoginPage from './pages/LoginPage';
+import Dashboard from './pages/Dashboard';
+import ProjectsPage from './pages/ProjectsPage';
+import WorkersPage from './pages/WorkersPage';
+import DailyLogPage from './pages/DailyLogPage';
+import ReportsPage from './pages/ReportsPage';
 
 function App() {
+  const [user, setUser] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Check for stored auth on mount
+  useEffect(() => {
+    const storedUser = localStorage.getItem('blueview_user');
+    if (storedUser) {
+      try {
+        setUser(JSON.parse(storedUser));
+      } catch (e) {
+        localStorage.removeItem('blueview_user');
+      }
+    }
+    setIsLoading(false);
+  }, []);
+
+  const handleLogin = (userData) => {
+    setUser(userData);
+    localStorage.setItem('blueview_user', JSON.stringify(userData));
+  };
+
+  const handleLogout = () => {
+    setUser(null);
+    localStorage.removeItem('blueview_user');
+  };
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-[#050508] flex items-center justify-center">
+        <div className="w-8 h-8 border-2 border-orange-500 border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
+
   return (
-    <div className="App">
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Home />}>
-            <Route index element={<Home />} />
-          </Route>
-        </Routes>
-      </BrowserRouter>
-    </div>
+    <BrowserRouter>
+      <Routes>
+        {/* Public routes */}
+        <Route 
+          path="/login" 
+          element={
+            user ? <Navigate to="/" replace /> : <LoginPage onLogin={handleLogin} />
+          } 
+        />
+
+        {/* Protected routes */}
+        <Route 
+          path="/" 
+          element={
+            user ? <Dashboard user={user} onLogout={handleLogout} /> : <Navigate to="/login" replace />
+          } 
+        />
+        <Route 
+          path="/projects" 
+          element={
+            user ? <ProjectsPage user={user} onLogout={handleLogout} /> : <Navigate to="/login" replace />
+          } 
+        />
+        <Route 
+          path="/workers" 
+          element={
+            user ? <WorkersPage user={user} onLogout={handleLogout} /> : <Navigate to="/login" replace />
+          } 
+        />
+        <Route 
+          path="/daily-log" 
+          element={
+            user ? <DailyLogPage user={user} onLogout={handleLogout} /> : <Navigate to="/login" replace />
+          } 
+        />
+        <Route 
+          path="/reports" 
+          element={
+            user ? <ReportsPage user={user} onLogout={handleLogout} /> : <Navigate to="/login" replace />
+          } 
+        />
+
+        {/* Catch all - redirect to home */}
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 
