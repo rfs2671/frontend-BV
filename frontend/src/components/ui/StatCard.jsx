@@ -31,6 +31,11 @@ const StatCard = ({
       iconColor: 'text-green-400',
       glow: 'group-hover:shadow-[0_0_30px_rgba(0,255,136,0.2)]',
     },
+    warning: {
+      iconBg: 'bg-yellow-400/10',
+      iconColor: 'text-yellow-400',
+      glow: 'group-hover:shadow-[0_0_30px_rgba(255,184,0,0.2)]',
+    },
   };
 
   const c = colors[color];
