@@ -1,7 +1,7 @@
 import React from 'react';
 
 const AnimatedBackground = () => {
-  return <div className="atmosphere-bg" />;
+  return <div className="page-bg" />;
 };
 
 export default AnimatedBackground;
