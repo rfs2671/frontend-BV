@@ -27,17 +27,16 @@ const LoginPage = ({ onLogin }) => {
       // Call login API
       const loginResponse = await authAPI.login(email, password);
       
-      // Store token
-      if (loginResponse.access_token) {
-        setToken(loginResponse.access_token);
-      }
-
-      // Fetch user profile
-      const userData = await authAPI.getMe();
+      // The API returns user data directly in the response
+      const userData = loginResponse.user || {
+        email: loginResponse.email,
+        full_name: loginResponse.name,
+        role: loginResponse.role,
+      };
       
       // Store user and redirect
       setStoredUser(userData);
-      toast.success('Welcome back!', `Logged in as ${userData.full_name || userData.email}`);
+      toast.success('Welcome back!', `Logged in as ${userData.full_name || userData.name || userData.email}`);
       onLogin(userData);
       
     } catch (err) {
