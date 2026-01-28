@@ -105,7 +105,8 @@ const Dashboard = ({ user, onLogout }) => {
 
               {/* Name */}
               <motion.h1 
-                className="text-hero text-white/90 mb-4"
+                className="text-5xl md:text-6xl font-extralight text-white tracking-tight mb-4"
+                style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif' }}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2 }}
