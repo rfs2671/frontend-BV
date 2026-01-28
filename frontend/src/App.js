@@ -25,8 +25,13 @@ function App() {
         try {
           // Validate token by fetching current user
           const userData = await authAPI.getMe();
-          setUser(userData);
-          setStoredUser(userData);
+          // Normalize user data - API returns 'name' but we might need 'full_name'
+          const normalizedUser = {
+            ...userData,
+            full_name: userData.full_name || userData.name,
+          };
+          setUser(normalizedUser);
+          setStoredUser(normalizedUser);
         } catch (error) {
           // Token invalid or expired
           console.error('Session validation failed:', error);
