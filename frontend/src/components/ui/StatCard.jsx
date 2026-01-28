@@ -38,7 +38,7 @@ const StatCard = ({
     },
   };
 
-  const c = colors[color];
+  const c = colors[color] || colors.orange;
 
   return (
     <motion.div
