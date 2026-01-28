@@ -3,15 +3,16 @@ import React from 'react';
 const AnimatedBackground = () => {
   return (
     <div className="animated-bg">
-      {/* Subtle Grid Pattern */}
+      {/* Animated Grid Pattern */}
       <div className="grid-pattern" />
       
-      {/* Very subtle scanline */}
+      {/* Moving Scanline */}
       <div className="scanline" />
       
-      {/* Muted gradient orbs */}
+      {/* Soft White Glow Orbs */}
       <div className="orb orb-1" />
       <div className="orb orb-2" />
+      <div className="orb orb-3" />
     </div>
   );
 };
