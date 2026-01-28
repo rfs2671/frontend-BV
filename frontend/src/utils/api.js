@@ -81,8 +81,10 @@ export const authAPI = {
 
     const data = await response.json();
     
-    // Store token
-    if (data.access_token) {
+    // Store token (API returns 'token' not 'access_token')
+    if (data.token) {
+      setToken(data.token);
+    } else if (data.access_token) {
       setToken(data.access_token);
     }
     
