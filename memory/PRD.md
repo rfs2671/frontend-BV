@@ -1,18 +1,12 @@
 # Blueview2 Frontend - Product Requirements Document
 
 ## Project Overview
-Blueview is a construction site operations management application with a "cool tech futuristic" glassmorphism aesthetic.
+Blueview is a construction site operations management application with a "cool tech futuristic" glassmorphism aesthetic (Base44 design system).
 
 ## Original Problem Statement
-Transform entire Blueview2 frontend UI/UX to a sophisticated futuristic aesthetic with:
-- Deep dark gradient backgrounds (#050a12 to #0A1929)
-- Glassmorphism cards with gradient fills and backdrop blur
-- Grid overlay, scanlines, floating white orbs
-- SF Pro Display typography with extralight weights
-- Consistent dark theme with white/transparent white color palette
-- Interactive hover effects with glows and shimmer
+Transform the Blueview2 frontend UI/UX to a sophisticated futuristic aesthetic and connect it to the production backend API at `https://blueview2-production.up.railway.app`.
 
-## Design System Implemented
+## Design System Implemented (Base44 Aesthetic)
 
 ### Color Palette
 - **Background**: Linear gradient #050a12 → #0A1929 → #050a12
@@ -31,83 +25,157 @@ Transform entire Blueview2 frontend UI/UX to a sophisticated futuristic aestheti
 - Moving scanline animation (8s duration)
 - Floating white glow orbs with pulsing opacity
 - Hover effects: white glow, holographic shimmer, scale
+- Glassmorphism skeleton loaders for loading states
 
-### Components
-- **Glass Cards**: rounded-[32px], glassmorphism, shadow on hover
-- **Stat Cards**: rounded-3xl, nested glass effect
-- **Icon Pods**: 52px circular with border
-- **Buttons**: btn-glass with shadow
-- **Inputs**: input-glass with backdrop blur
-- **Floating Nav**: pill-shaped with active indicator
+## Tech Stack
+- **Frontend**: React.js 19, Tailwind CSS, Framer Motion
+- **Backend**: External FastAPI API (production at Railway)
+- **Database**: MongoDB (managed by backend)
+- **Authentication**: JWT-based authentication
+
+## API Integration Details
+
+### Base URL
+`https://blueview2-production.up.railway.app`
+
+### Authentication
+- POST `/api/auth/login` - Login with email/password, returns JWT token
+- GET `/api/auth/me` - Get current user profile
+- JWT token stored in localStorage and attached to all API requests via Authorization header
+
+### Endpoints Used
+- `GET /api/projects` - Fetch all projects
+- `POST /api/projects` - Create new project
+- `DELETE /api/projects/{project_id}` - Delete project
+- `GET /api/workers` - Fetch all workers
+- `GET /api/checkins` - Fetch check-ins
+- `GET /api/checkins/project/{project_id}/today` - Today's check-ins
+- `GET /api/daily-logs` - Fetch daily logs
+- `POST /api/daily-logs` - Create daily log
+- `GET /api/daily-logs/{log_id}/pdf` - Generate PDF report
 
 ## Pages Implemented
 
 ### 1. Login (`/login`)
-- Large "Blueview" title in extralight
-- Glass card with email/password inputs
-- Demo credentials display
+- Glass card login form
+- Email/password inputs
+- JWT authentication with production API
+- Error handling with toast notifications
+- Loading states during submission
 
 ### 2. Dashboard (`/`)
-- Large user name (extralight)
-- Date and email display
-- 3 stat cards nested in main glass container
-- Quick actions grid
+- User greeting with name from `/api/auth/me`
+- Dynamic stats (Total Workers, Active Projects, On Site Now)
+- Stats fetched from `/api/workers` and `/api/projects`
+- Quick actions grid to other pages
+- Skeleton loaders during data fetch
 
 ### 3. Projects (`/projects`)
-- Search bar
-- Project list with NFC badges, codes
-- Add project modal
+- List of projects from `/api/projects`
+- Search functionality
+- Create new project modal (POST to API)
+- Delete project functionality
+- Skeleton loaders during fetch
 
 ### 4. Workers (`/workers`)
-- Date selector with TODAY badge
-- Summary stats (Workers, Projects, Companies)
-- Check-in list with ON-SITE/DONE status
+- Date selector for viewing different days
+- Worker check-in list from `/api/checkins`
+- Stats: Workers count, Projects, Companies
+- ON-SITE/DONE status indicators
+- Skeleton loaders during fetch
 
 ### 5. Daily Log (`/daily-log`)
-- Project selector dropdown
+- Project selector from `/api/projects`
 - Weather picker (8 options)
-- Expandable subcontractor cards
-- Work description with voice input
-- Inspection toggles
+- Subcontractor cards with:
+  - Company name (editable)
+  - Worker count (editable)
+  - Work description
+  - Inspection toggles (Cleanliness, Safety)
+- Submit daily log to `/api/daily-logs`
 
 ### 6. Reports (`/reports`)
-- System status grid
-- Sample report generator
-- Create sample data option
-- Admin credentials display
+- System status showing database connection
+- Project/Worker counts from API
+- Project selector for report generation
+- Recent daily logs display
+- PDF download functionality
 
-## Tech Stack
-- React.js 19
-- Tailwind CSS + Custom CSS
-- Framer Motion (spring animations)
-- Lucide React icons
-- React Router DOM
+## Custom Components Created
+
+### UI Components
+- `GlassSkeleton.jsx` - Shimmer skeleton loaders matching Base44 aesthetic
+- `Toast.jsx` - Toast notification system with glassmorphism styling
+- `AnimatedBackground.jsx` - Grid, scanlines, floating orbs
+- `FloatingNav.jsx` - Pill-shaped navigation bar
+- `GlassCard.jsx` - Glassmorphism card component
+- `StatCard.jsx` - Statistics display cards
+
+### Utilities
+- `utils/api.js` - Centralized API utility with:
+  - Automatic JWT token attachment
+  - 401 error handling with redirect
+  - Token management (get/set/remove)
+  - All API endpoint wrappers
 
 ## What's Implemented ✅
-- [x] Complete glassmorphism design system
+- [x] Complete Base44 glassmorphism design system
 - [x] All 6 pages with consistent styling
 - [x] Animated backgrounds (grid, scanlines, orbs)
 - [x] SF Pro Display typography
 - [x] Interactive hover effects
 - [x] Floating navigation with active indicator
+- [x] JWT authentication flow
+- [x] API utility with token management
+- [x] All pages connected to production API
+- [x] Skeleton loaders for loading states
+- [x] Toast notifications for success/error
+- [x] 401 error handling with redirect to login
 - [x] Session persistence via localStorage
 
-## Data Status
-- **MOCKED**: All data is frontend-only mock data
-- No backend API integration
+## Important Notes
 
-## Next Action Items (P0)
-1. Backend API integration
-2. MongoDB connection
-3. Real authentication
-4. PDF report generation
+### API Credentials Required
+The production backend requires valid credentials to access protected routes. The application is fully integrated but requires working credentials to test authenticated flows.
+
+### Environment Variables
+- `REACT_APP_API_URL` - Optional override for API base URL (defaults to Railway production)
+- `REACT_APP_BACKEND_URL` - Frontend preview URL
+
+## Next Action Items (Requires User Input)
+1. **Valid production credentials** needed to fully test authenticated flows
+2. Verify all CRUD operations work with actual data
 
 ## Future Enhancements (P1)
-- Photo upload for daily logs
-- Voice-to-text integration
-- NFC tag scanning
-- Real-time updates
+- Photo upload for daily logs (Camera button implemented, upload pending)
+- Voice-to-text for work descriptions (Mic button implemented, integration pending)
+- Dark/Light theme toggle
+- Real-time updates via WebSocket
 - Push notifications
+- NFC tag scanning integration
+
+## File Structure
+```
+/app/frontend/src/
+├── components/ui/
+│   ├── AnimatedBackground.jsx
+│   ├── FloatingNav.jsx
+│   ├── GlassCard.jsx
+│   ├── GlassSkeleton.jsx  ← NEW
+│   ├── Toast.jsx          ← NEW
+│   └── ...shadcn components
+├── pages/
+│   ├── LoginPage.jsx      (API integrated)
+│   ├── Dashboard.jsx      (API integrated)
+│   ├── ProjectsPage.jsx   (API integrated)
+│   ├── WorkersPage.jsx    (API integrated)
+│   ├── DailyLogPage.jsx   (API integrated)
+│   └── ReportsPage.jsx    (API integrated)
+├── utils/
+│   └── api.js             ← NEW (centralized API utility)
+├── App.js                 (ToastProvider, session validation)
+└── index.js
+```
 
 ---
 *Last Updated: January 28, 2026*
