@@ -1,0 +1,171 @@
+import React, { createContext, useContext, useState, useCallback } from 'react';
+import { View, Text, StyleSheet, Animated, Pressable, Dimensions } from 'react-native';
+import { BlurView } from 'expo-blur';
+import { X, AlertCircle, CheckCircle, Info, AlertTriangle } from 'lucide-react-native';
+import { colors, borderRadius, spacing } from '../styles/theme';
+
+const { width } = Dimensions.get('window');
+
+const toastConfig = {
+  error: {
+    icon: AlertCircle,
+    borderColor: 'rgba(248, 113, 113, 0.3)',
+    bgColor: 'rgba(248, 113, 113, 0.1)',
+    iconColor: '#f87171',
+  },
+  success: {
+    icon: CheckCircle,
+    borderColor: 'rgba(74, 222, 128, 0.3)',
+    bgColor: 'rgba(74, 222, 128, 0.1)',
+    iconColor: '#4ade80',
+  },
+  warning: {
+    icon: AlertTriangle,
+    borderColor: 'rgba(251, 191, 36, 0.3)',
+    bgColor: 'rgba(251, 191, 36, 0.1)',
+    iconColor: '#fbbf24',
+  },
+  info: {
+    icon: Info,
+    borderColor: colors.glass.border,
+    bgColor: colors.glass.background,
+    iconColor: colors.text.secondary,
+  },
+};
+
+const ToastContext = createContext(null);
+
+const Toast = ({ id, type = 'info', title, message, onClose }) => {
+  const config = toastConfig[type] || toastConfig.info;
+  const Icon = config.icon;
+  const opacity = React.useRef(new Animated.Value(0)).current;
+  const translateX = React.useRef(new Animated.Value(50)).current;
+
+  React.useEffect(() => {
+    // Animate in
+    Animated.parallel([
+      Animated.timing(opacity, {
+        toValue: 1,
+        duration: 300,
+        useNativeDriver: true,
+      }),
+      Animated.timing(translateX, {
+        toValue: 0,
+        duration: 300,
+        useNativeDriver: true,
+      }),
+    ]).start();
+
+    // Auto dismiss
+    const timer = setTimeout(() => {
+      Animated.parallel([
+        Animated.timing(opacity, {
+          toValue: 0,
+          duration: 200,
+          useNativeDriver: true,
+        }),
+        Animated.timing(translateX, {
+          toValue: 50,
+          duration: 200,
+          useNativeDriver: true,
+        }),
+      ]).start(() => onClose(id));
+    }, 4000);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  return (
+    <Animated.View
+      style={[
+        styles.toast,
+        { backgroundColor: config.bgColor, borderColor: config.borderColor },
+        { opacity, transform: [{ translateX }] },
+      ]}
+    >
+      <Icon size={20} strokeWidth={1.5} color={config.iconColor} />
+      <View style={styles.toastContent}>
+        {title && <Text style={styles.toastTitle}>{title}</Text>}
+        {message && <Text style={styles.toastMessage}>{message}</Text>}
+      </View>
+      <Pressable onPress={() => onClose(id)} hitSlop={10}>
+        <X size={16} strokeWidth={1.5} color={colors.text.muted} />
+      </Pressable>
+    </Animated.View>
+  );
+};
+
+export const ToastProvider = ({ children }) => {
+  const [toasts, setToasts] = useState([]);
+
+  const addToast = useCallback((toast) => {
+    const id = Date.now() + Math.random();
+    setToasts((prev) => [...prev, { ...toast, id }]);
+    return id;
+  }, []);
+
+  const removeToast = useCallback((id) => {
+    setToasts((prev) => prev.filter((toast) => toast.id !== id));
+  }, []);
+
+  const toast = {
+    error: (title, message) => addToast({ type: 'error', title, message }),
+    success: (title, message) => addToast({ type: 'success', title, message }),
+    warning: (title, message) => addToast({ type: 'warning', title, message }),
+    info: (title, message) => addToast({ type: 'info', title, message }),
+  };
+
+  return (
+    <ToastContext.Provider value={toast}>
+      {children}
+      <View style={styles.toastContainer}>
+        {toasts.map((t) => (
+          <Toast key={t.id} {...t} onClose={removeToast} />
+        ))}
+      </View>
+    </ToastContext.Provider>
+  );
+};
+
+export const useToast = () => {
+  const context = useContext(ToastContext);
+  if (!context) {
+    throw new Error('useToast must be used within a ToastProvider');
+  }
+  return context;
+};
+
+const styles = StyleSheet.create({
+  toastContainer: {
+    position: 'absolute',
+    top: 60,
+    right: 16,
+    zIndex: 1000,
+    gap: spacing.sm,
+  },
+  toast: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    width: Math.min(320, width - 32),
+    padding: spacing.md,
+    borderRadius: borderRadius.lg,
+    borderWidth: 1,
+    gap: spacing.sm,
+  },
+  toastContent: {
+    flex: 1,
+  },
+  toastTitle: {
+    fontSize: 14,
+    fontWeight: '500',
+    color: colors.text.primary,
+    marginBottom: 2,
+  },
+  toastMessage: {
+    fontSize: 13,
+    color: colors.text.secondary,
+    lineHeight: 18,
+  },
+});
+
+export default ToastProvider;
