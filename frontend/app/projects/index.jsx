@@ -22,16 +22,16 @@ import {
   Search,
   LogOut,
 } from 'lucide-react-native';
-import AnimatedBackground from '../src/components/AnimatedBackground';
-import { GlassCard, StatCard, IconPod } from '../src/components/GlassCard';
-import GlassButton from '../src/components/GlassButton';
-import GlassInput from '../src/components/GlassInput';
-import { ProjectCardSkeleton } from '../src/components/GlassSkeleton';
-import FloatingNav from '../src/components/FloatingNav';
-import { useToast } from '../src/components/Toast';
-import { useAuth } from '../src/context/AuthContext';
-import { projectsAPI } from '../src/utils/api';
-import { colors, spacing, borderRadius, typography } from '../src/styles/theme';
+import AnimatedBackground from '../../src/components/AnimatedBackground';
+import { GlassCard, StatCard, IconPod } from '../../src/components/GlassCard';
+import GlassButton from '../../src/components/GlassButton';
+import GlassInput from '../../src/components/GlassInput';
+import { ProjectCardSkeleton } from '../../src/components/GlassSkeleton';
+import FloatingNav from '../../src/components/FloatingNav';
+import { useToast } from '../../src/components/Toast';
+import { useAuth } from '../../src/context/AuthContext';
+import { projectsAPI } from '../../src/utils/api';
+import { colors, spacing, borderRadius, typography } from '../../src/styles/theme';
 
 export default function ProjectsScreen() {
   const router = useRouter();
