@@ -25,6 +25,7 @@ const quickActions = [
   { title: 'Workers', subtitle: 'Daily sign-in log', path: '/workers' },
   { title: 'Daily Log', subtitle: 'Create site report', path: '/daily-log' },
   { title: 'Reports', subtitle: 'View & download', path: '/reports' },
+  { title: 'Integrations', subtitle: 'Dropbox & cloud sync', path: '/admin/integrations' },
 ];
 
 export default function DashboardScreen() {
