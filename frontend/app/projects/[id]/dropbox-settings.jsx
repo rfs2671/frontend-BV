@@ -525,6 +525,17 @@ const styles = StyleSheet.create({
     fontSize: 13,
     color: colors.text.muted,
   },
+  adminOnlyHint: {
+    fontSize: 12,
+    color: colors.text.subtle,
+    fontStyle: 'italic',
+    marginTop: spacing.sm,
+  },
+  noFolderText: {
+    fontSize: 14,
+    color: colors.text.muted,
+    fontStyle: 'italic',
+  },
   folderCard: {
     marginBottom: spacing.md,
   },
