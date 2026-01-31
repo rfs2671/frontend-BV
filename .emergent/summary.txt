@@ -1,55 +1,64 @@
 <analysis>**original_problem_statement:**
-The user wants to transform the UI/UX of their frontend application, which was originally a React Native app located at . The goal is to create a web version with a cool tech futuristic aesthetic. After several iterations of feedback, the user settled on a specific Soft, Frosted, Deep-Blue design inspired by an image referred to as Base44.
+The user's initial request was to transform a React Native application's UI into a cool tech futuristic React web application with a Soft, Frosted, Deep-Blue aesthetic, known as Base44. After completing this, the task shifted to connecting the new frontend to the user's live production backend.
 
-The final user request is to connect this newly designed frontend to their existing production backend, moving away from the mock data used for the UI development. The production backend URL is .
+Subsequently, the user requested a major pivot: to convert the now-completed React web app back into an Expo React Native application, ensuring the Base44 visual style was preserved and targeting both web and Android.
+
+The current and most recent feature request is to build a comprehensive Dropbox integration. This involves creating pages for an admin to connect a Dropbox account, for project managers to link specific Dropbox folders to projects, and for team members to view the synced files within the app.
+
+PRODUCT REQUIREMENTS:
+1.  **Admin Dropbox Integration Page ():**
+    *   Display Dropbox connection status.
+    *   Provide a Connect to Dropbox button to initiate the OAuth flow.
+    *   Show the connected account's email if active.
+    *   Include a Disconnect button.
+2.  **Project-Level Dropbox Settings Page ():**
+    *   An admin-only page to enable/disable Dropbox sync for a specific project.
+    *   Allow selection of a specific Dropbox folder to sync with the project.
+3.  **File Viewing Page ():**
+    *   A page for team members to view a list of files synced from the selected Dropbox folder.
+    *   Files should be viewable online within the app, with an option to download.
 
 **User's preferred language**: English
 
 **what currently exists?**
-A fully redesigned React frontend application that matches the user's desired Base44 aesthetic. The application consists of several pages (Login, Dashboard, Projects, Workers, Daily Log, Reports) and custom UI components built with React, TailwindCSS, and Framer Motion for animations. All pages are currently populated with static, hardcoded mock data. The agent has analyzed the user's  file and is aware of the backend's API structure and the production URL.
+The project is an Expo React Native application, successfully converted from a Create React App build. It maintains the Base44 glassmorphism aesthetic and is fully connected to the user's production backend API (). Core features like authentication, dashboard, project list, and worker list are functional with live data. The agent has just begun the Dropbox integration by exploring the relevant backend endpoints and creating placeholder files for the new pages.
 
 **Last working item**:
--   **Last item agent was working:** Preparing to connect the frontend to the user's production backend API. The agent has explored the provided  file to understand the available endpoints and data models and was about to start the implementation.
--   **Status:** NOT STARTED
+-   **Last item agent was working:** The agent was beginning the implementation of the Dropbox integration feature. It identified the necessary backend API endpoints (), updated the API utility file () with these new endpoints, and created the placeholder page files. The immediate next step was to add a link to the new Admin Integrations page from the dashboard.
+-   **Status:** IN PROGRESS
 -   **Agent Testing Done:** N
--   **Which testing method agent to use?** both. The agent should first use  to manually test the key backend endpoints (like login). After implementation, the frontend testing agent should be used to verify that data is correctly fetched and displayed, and that POST requests work as expected.
+-   **Which testing method agent to use?** both. The backend testing agent (or ) should be used to test each Dropbox endpoint individually. The frontend testing agent should be used to conduct a full end-to-end test of the OAuth flow, folder selection, and file viewing UI.
 -   **User Testing Done:** N
 
 **All Pending/In progress Issue list**:
-There are no pending bugs or issues. The primary focus is the main task of backend integration.
+There are no known bugs or issues. The focus is entirely on implementing the new Dropbox feature set.
 
 **In progress Task List**:
-
--   **Task 1:** Connect Frontend to Production Backend (Priority: P0)
+-   **Task 1:** Implement Dropbox Integration (Priority: P0)
     -   **Where to resume:**
-        1.  Create a dedicated API utility file (e.g., ) to centralize all  requests.
-        2.  Implement the login functionality in  by making a  request to the  endpoint. Store the received JWT token securely (e.g., in ).
-        3.  Refactor all page components (, , , etc.) to replace mock data arrays with API calls to the production backend (). Ensure the JWT token is included in the authorization header for protected routes.
-    -   **What will be achieved with this?** The application will become fully functional, displaying and interacting with real data from the user's backend, transitioning it from a UI prototype to a working tool.
+        1.  Update the Dashboard page () to add a navigation link or a Quick Action button that leads to the new Admin Integrations page ().
+        2.  Implement the UI and logic for , allowing an admin to initiate the Dropbox OAuth flow.
+        3.  Build out the project-specific settings page at  for folder selection.
+        4.  Develop the file viewer page at  to list and display files from Dropbox.
+    -   **What will be achieved with this?** A fully functional Dropbox integration, allowing admins to connect their account and sync project-specific folders for team members to view within the app.
     -   **Status:** IN PROGRESS
     -   **Should Test frontend/backend/both after fix?** both
     -   **Blocked on something:** None.
 
 **Upcoming and Future Tasks**
-
 -   **Future Tasks:**
-    -   The agent suggested implementing a dark/light theme toggle as a potential enhancement. This could be proposed to the user after the backend integration is complete.
+    -   Implement a dark/light theme toggle. (Low priority, suggested by a previous agent).
 
 **Completed work in this session**
--   **Full Frontend UI/UX Transformation:** The agent rebuilt the user's React Native app as a React web app and applied a highly specific, futuristic design system (Base44 aesthetic) based on iterative user feedback.
--   **Component and Page Creation:**
-    -   Created reusable UI components in  for elements like animated backgrounds, glass cards, and navigation.
-    -   Built all core pages (, , , , , ) in .
--   **Session Persistence:** Implemented user login state persistence using  in .
--   **UI Testing:** Used the  tool and  to verify the UI and fix minor layout issues while using mock data.
--   **Documentation:** Created a  file in .
+-   **Expo React Native Conversion:** The entire React web application was successfully migrated to an Expo React Native framework, targeting both web and Android. This included replacing CRA/React Router/Tailwind with Expo/Expo Router/StyleSheet, and recreating the Base44 UI using React Native components (, ).
+-   **API Integration & Debugging:** The frontend was connected to the user's production backend, replacing all mock data. Issues with JWT format ( vs ) and data keys ( vs ) were resolved.
+-   **Web Hover Effects:** Implemented hover states for interactive elements (buttons, cards, inputs) to enhance the user experience on the web version of the Expo app.
+-   **UI Refinement:** Removed animated background bubbles as per user request for a cleaner aesthetic.
+-   **Comprehensive Testing:** Successfully used the testing agent to verify the full authentication flow, session persistence, navigation, and data display after the API integration was complete.
+-   **Dropbox Integration Scaffolding:** Created placeholder files for the three new pages required for the Dropbox feature.
 
 **Earlier issues found/mentioned but not fixed**
-   - **Issue 1:** A  was flagged by the testing agent in the first test run. The main agent inspected the code, concluded it was likely a timing issue with the automated test, and did not explicitly re-verify the fix. While manual testing showed it worked, this could be a latent bug.
-     - **Debug checklist:** After API integration, specifically test browser refresh on a protected page to ensure the user remains logged in.
-     - **Why to solve this issue and what will be achieved with this?** Ensures a smooth user experience without requiring re-login after every page refresh.
-     - **Should Test frontend/backend/both after fix:** frontend
-     - **Is recurring issue?** N
+-   None. The session persistence issue mentioned in the previous handover was implicitly resolved and verified by the testing agent.
 
 **Known issue recurrence from previous fork**
 -   N/A
@@ -58,45 +67,47 @@ There are no pending bugs or issues. The primary focus is the main task of backe
 
 
 **Key Technical Concepts**
--   **Frontend:** React, TailwindCSS, Framer Motion
--   **Backend:** FastAPI, Python, MongoDB
--   **Design System:** Glassmorphism, Monochromatic UI, Advanced CSS Animations (glow, shimmer, scanlines), Responsive Design
+-   **Frontend:** Expo SDK, React Native, Expo Router (file-based routing), Axios.
+-   **Styling:** React Native ,  for gradients,  for the glass effect.
+-   **Backend:** FastAPI, Python, MongoDB.
+-   **Authentication:** JWT via a custom  and secure storage.
 
 **key DB schema**
-The schema is defined by Pydantic models in . Key models include:
--   : {full_name, email, role}
+The backend schema is defined by Pydantic models in the user's .
+-   : {name, email, role}
 -   : {name, location, status}
 -   : {name, trade, company, status}
 -   : {project_id, date, weather, notes}
 
 **changes in tech stack**
--   The project was transformed from a **React Native** mobile application to a **React** web application.
+-   The frontend was completely migrated from a **Create React App** (with React Router and Tailwind CSS) to an **Expo React Native** application (with Expo Router and StyleSheet).
 
 **All files of reference**
--   : Source of truth for all API endpoints and data models.
--   : All page components that require refactoring to use API data.
--   : Needs to be updated for JWT authentication.
--   : Contains the main router and session logic.
--   : Project requirements document.
--   : Most recent test report.
+-   : The directory for all pages/routes.
+-   : The central Axios client for all backend communication.
+-   : Manages user session and authentication state.
+-   : Contains all the custom Base44 themed React Native components.
+-   : New page for Dropbox admin settings.
+-   : New page for project-level Dropbox settings.
+-   : New page for viewing synced Dropbox files.
 
 **Areas that need refactoring**:
--   All components within  must be refactored to remove hardcoded mock data and replace it with live API calls.
--   A centralized API handling module should be created in the frontend () to manage fetch logic and token handling.
+-   The three newly created files for the Dropbox integration are currently empty placeholders and require full implementation.
 
 **key api endpoints**
 -   **Base URL**: 
--   : Authenticates user and returns JWT.
+-   : Authenticates user.
 -   : Fetches current user data.
 -   : Fetches list of projects.
 -   : Fetches list of workers.
--   : Fetches daily logs.
+-   : Checks Dropbox connection status.
+-   : Gets the Dropbox OAuth URL.
+-   : Lists synced files for a project.
 
 **Critical Info for New Agent**
--   The primary task is to integrate the frontend with the backend API specified in  and hosted at .
--   Authentication is JWT-based via the  endpoint. The received token must be sent as a Bearer token in the  header for all subsequent protected API calls.
--   The user has been very specific about the UI design. Do not make any aesthetic changes. The Base44 design is final.
--   Use the credentials  /  (found in ) for testing the login flow.
+-   The project is now an Expo React Native app. Do not use web-specific libraries like  or . All styling is done via React Native's .
+-   The user has provided a Dropbox App Key: . This is intended for the backend, which seems to be already configured. The frontend should interact with the existing backend endpoints for Dropbox.
+-   The immediate next step is to add a link from the Dashboard to the  page to make the new feature accessible.
 
 **documents and test reports created in this job**
 -   
@@ -104,26 +115,26 @@ The schema is defined by Pydantic models in . Key models include:
 -   
 
 **Last 10 User Messages and any pending HUMAN messages**
-1.  **Request:** User wants to move from mocked data to their production backend API.
-2.  **Info:** Provided Base URL:  and uploaded .
-3.  **Confirmation:** Confirmed the Base44 rendition is the desired final vibe.
-4.  **Info:** Provided a very detailed design spec for the cool tech futuristic theme (effects, colors, animations).
-5.  **Request:** Asked to change the typography for the user's name on the dashboard.
-6.  **Confirmation:** Confirmed the typography change and approved applying the design to the rest of the frontend.
-7.  **Feedback:** The Base44 version of the dashboard looks good.
-8.  **Feedback:** A previous design was too dark and flat, with specific instructions to replicate the Base44 aesthetic (navy background, dusty glass, etc.).
-9.  **Request:** Asked to see one page updated with the new design first for confirmation.
-10. **Feedback:** A previous design was too cluttered and boxy, with a request to pivot to a Minimalist Glassmorphism aesthetic.
+1.  **Request:** User wants to add a comprehensive Dropbox integration feature.
+2.  **Clarification:** User confirmed they want the full feature set (Admin connect, Project folder linking, File viewing).
+3.  **Info:** User provided a Dropbox App Key and specified implementation choices (view online with download option).
+4.  **Request:** User asked why buttons don't light up on hover.
+5.  **Action:** Agent explained React Native's touch-first design and implemented web-specific hover effects using /.
+6.  **Request:** User asked to remove the animated bubbles from the background.
+7.  **Action:** Agent removed the bubbles and confirmed the cleaner look.
+8.  **Request:** User asked to convert the React web app to an Expo React Native app.
+9.  **Clarification:** User confirmed they want the same exact visual design for web and Android, using JSX.
+10. **Info:** User provided their real login credentials ( / ) for testing.
 
 **Project Health Check:**
--   **Broken:** The data layer is non-existent; the app cannot communicate with any backend.
--   **Mocked:** All data displayed across all pages is hardcoded.
+-   **Broken:** The new Dropbox integration feature is completely unimplemented.
+-   **Mocked:** None. The application is fully connected to the live backend.
 
 **3rd Party Integrations**
--   None.
+-   **Dropbox:** A new integration is being built. The backend handles the OAuth and API interaction. Frontend needs to call the wrapper API endpoints. The user provided an App Key () for the backend.
 
 **Testing status**
--   **Testing agent used after significant changes:** YES
+-   **Testing agent used after significant changes:** YES (used to validate API integration and session persistence on the React Native app).
 -   **Troubleshoot agent used after agent stuck in loop:** NO
 -   **Test files created:** [, ]
 -   **Known regressions:** None.
@@ -131,7 +142,6 @@ The schema is defined by Pydantic models in . Key models include:
 **Credentials to test flow:**
 -   **Email:** 
 -   **Password:** 
-    (These are hardcoded in the user's  for a test user and should be used to test the login flow against the production backend).
 
 **What agent forgot to execute**
--   The agent has not yet started the primary task from the user's latest request: integrating the frontend with the production backend API.</analysis>
+-   The agent was about to add the navigation link from the Dashboard page to the new Admin Integrations page but did not get to execute the file edit. This is the immediate first step for the next agent.</analysis>
