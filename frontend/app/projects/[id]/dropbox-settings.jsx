@@ -268,13 +268,14 @@ export default function ProjectDropboxSettingsScreen() {
                     
                     {selectedFolder ? (
                       <Pressable
-                        onPress={() => {
+                        onPress={isAdmin ? () => {
                           setShowFolderPicker(true);
                           fetchFolders(selectedFolder);
-                        }}
+                        } : undefined}
+                        disabled={!isAdmin}
                         style={({ pressed }) => [
                           styles.selectedFolder,
-                          pressed && styles.selectedFolderPressed,
+                          pressed && isAdmin && styles.selectedFolderPressed,
                         ]}
                       >
                         <IconPod size={44}>
@@ -284,9 +285,9 @@ export default function ProjectDropboxSettingsScreen() {
                           <Text style={styles.folderPath}>{selectedFolder}</Text>
                           <Text style={styles.folderMeta}>{fileCount} files synced</Text>
                         </View>
-                        <ChevronRight size={20} strokeWidth={1.5} color={colors.text.muted} />
+                        {isAdmin && <ChevronRight size={20} strokeWidth={1.5} color={colors.text.muted} />}
                       </Pressable>
-                    ) : (
+                    ) : isAdmin ? (
                       <GlassButton
                         title="Select Folder"
                         icon={<Folder size={18} strokeWidth={1.5} color={colors.text.primary} />}
@@ -295,6 +296,8 @@ export default function ProjectDropboxSettingsScreen() {
                           fetchFolders('');
                         }}
                       />
+                    ) : (
+                      <Text style={styles.noFolderText}>No folder linked yet</Text>
                     )}
                   </GlassCard>
 
