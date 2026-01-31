@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Pressable, Text, StyleSheet, ActivityIndicator, View } from 'react-native';
 import { colors, borderRadius, spacing } from '../styles/theme';
 
 /**
- * GlassButton - Glassmorphism styled button
+ * GlassButton - Glassmorphism styled button with hover support
  */
 const GlassButton = ({
   title,
@@ -16,13 +16,18 @@ const GlassButton = ({
   style,
   textStyle,
 }) => {
+  const [isHovered, setIsHovered] = useState(false);
+
   if (variant === 'icon') {
     return (
       <Pressable
         onPress={onPress}
         disabled={disabled || loading}
+        onHoverIn={() => setIsHovered(true)}
+        onHoverOut={() => setIsHovered(false)}
         style={({ pressed }) => [
           styles.iconButton,
+          isHovered && styles.hovered,
           pressed && styles.pressed,
           disabled && styles.disabled,
           style,
@@ -41,8 +46,11 @@ const GlassButton = ({
     <Pressable
       onPress={onPress}
       disabled={disabled || loading}
+      onHoverIn={() => setIsHovered(true)}
+      onHoverOut={() => setIsHovered(false)}
       style={({ pressed }) => [
         styles.button,
+        isHovered && styles.hovered,
         pressed && styles.pressed,
         disabled && styles.disabled,
         style,
@@ -72,6 +80,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
+    transition: 'all 0.2s ease',
   },
   iconButton: {
     width: 44,
@@ -82,6 +91,7 @@ const styles = StyleSheet.create({
     borderColor: colors.glass.border,
     alignItems: 'center',
     justifyContent: 'center',
+    transition: 'all 0.2s ease',
   },
   content: {
     flexDirection: 'row',
@@ -99,6 +109,11 @@ const styles = StyleSheet.create({
   },
   iconRight: {
     marginLeft: spacing.sm,
+  },
+  hovered: {
+    backgroundColor: 'rgba(255, 255, 255, 0.15)',
+    borderColor: 'rgba(255, 255, 255, 0.3)',
+    transform: [{ scale: 1.02 }],
   },
   pressed: {
     opacity: 0.8,

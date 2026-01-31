@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { TextInput, View, StyleSheet } from 'react-native';
 import { colors, borderRadius, spacing } from '../styles/theme';
 
 /**
- * GlassInput - Glassmorphism styled text input
+ * GlassInput - Glassmorphism styled text input with hover/focus support
  */
 const GlassInput = ({
   value,
@@ -20,8 +20,20 @@ const GlassInput = ({
   numberOfLines = 1,
   ...props
 }) => {
+  const [isFocused, setIsFocused] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
+
   return (
-    <View style={[styles.container, style]}>
+    <View 
+      style={[
+        styles.container, 
+        isHovered && styles.hovered,
+        isFocused && styles.focused,
+        style
+      ]}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
       {leftIcon && <View style={styles.leftIcon}>{leftIcon}</View>}
       <TextInput
         value={value}
@@ -33,6 +45,8 @@ const GlassInput = ({
         autoCapitalize={autoCapitalize}
         multiline={multiline}
         numberOfLines={numberOfLines}
+        onFocus={() => setIsFocused(true)}
+        onBlur={() => setIsFocused(false)}
         style={[
           styles.input,
           leftIcon && styles.inputWithLeftIcon,
@@ -56,6 +70,15 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     position: 'relative',
+    transition: 'all 0.2s ease',
+  },
+  hovered: {
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    borderColor: 'rgba(255, 255, 255, 0.2)',
+  },
+  focused: {
+    backgroundColor: 'rgba(255, 255, 255, 0.12)',
+    borderColor: 'rgba(255, 255, 255, 0.3)',
   },
   input: {
     flex: 1,
@@ -63,6 +86,7 @@ const styles = StyleSheet.create({
     paddingVertical: spacing.md,
     color: colors.text.primary,
     fontSize: 16,
+    outlineStyle: 'none',
   },
   inputWithLeftIcon: {
     paddingLeft: spacing.xxl + spacing.md,

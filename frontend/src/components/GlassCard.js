@@ -1,44 +1,58 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, StyleSheet, Pressable } from 'react-native';
 import { BlurView } from 'expo-blur';
 import { colors, borderRadius, spacing } from '../styles/theme';
 
 /**
- * GlassCard - Glassmorphism card component
+ * GlassCard - Glassmorphism card component with hover support
  */
 export const GlassCard = ({ children, style, onPress, intensity = 20 }) => {
+  const [isHovered, setIsHovered] = useState(false);
   const CardWrapper = onPress ? Pressable : View;
+  
+  const cardProps = onPress ? {
+    onPress,
+    onHoverIn: () => setIsHovered(true),
+    onHoverOut: () => setIsHovered(false),
+  } : {};
   
   return (
     <CardWrapper
-      onPress={onPress}
-      style={({ pressed }) => [
+      {...cardProps}
+      style={[
         styles.container,
         style,
-        pressed && onPress && styles.pressed,
+        isHovered && onPress && styles.cardHovered,
       ]}
     >
       <BlurView intensity={intensity} tint="dark" style={styles.blur}>
         <View style={styles.content}>{children}</View>
       </BlurView>
-      <View style={styles.border} />
+      <View style={[styles.border, isHovered && onPress && styles.borderHovered]} />
     </CardWrapper>
   );
 };
 
 /**
- * StatCard - Statistics card with glass effect
+ * StatCard - Statistics card with glass effect and hover support
  */
 export const StatCard = ({ children, style, onPress }) => {
+  const [isHovered, setIsHovered] = useState(false);
   const CardWrapper = onPress ? Pressable : View;
+  
+  const cardProps = onPress ? {
+    onPress,
+    onHoverIn: () => setIsHovered(true),
+    onHoverOut: () => setIsHovered(false),
+  } : {};
   
   return (
     <CardWrapper
-      onPress={onPress}
-      style={({ pressed }) => [
+      {...cardProps}
+      style={[
         styles.statContainer,
         style,
-        pressed && onPress && styles.pressed,
+        isHovered && styles.statHovered,
       ]}
     >
       <View style={styles.statContent}>{children}</View>
@@ -60,6 +74,7 @@ const styles = StyleSheet.create({
     borderRadius: borderRadius.xxl,
     overflow: 'hidden',
     position: 'relative',
+    transition: 'all 0.2s ease',
   },
   blur: {
     overflow: 'hidden',
@@ -75,10 +90,13 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.glass.border,
     pointerEvents: 'none',
+    transition: 'all 0.2s ease',
   },
-  pressed: {
-    opacity: 0.9,
-    transform: [{ scale: 0.98 }],
+  borderHovered: {
+    borderColor: 'rgba(255, 255, 255, 0.3)',
+  },
+  cardHovered: {
+    transform: [{ scale: 1.01 }],
   },
   statContainer: {
     backgroundColor: colors.glass.background,
@@ -86,6 +104,12 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.glass.border,
     overflow: 'hidden',
+    transition: 'all 0.2s ease',
+  },
+  statHovered: {
+    backgroundColor: 'rgba(255, 255, 255, 0.12)',
+    borderColor: 'rgba(255, 255, 255, 0.25)',
+    transform: [{ scale: 1.02 }, { translateY: -2 }],
   },
   statContent: {
     padding: spacing.lg,
