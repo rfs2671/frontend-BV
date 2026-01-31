@@ -151,7 +151,20 @@ export default function AdminIntegrationsScreen() {
             <Text style={styles.titleText}>Integrations</Text>
           </View>
 
-          {loading ? (
+          {!isAdmin ? (
+            <GlassCard style={styles.accessDeniedCard}>
+              <ShieldAlert size={56} strokeWidth={1} color={colors.status.error} />
+              <Text style={styles.accessDeniedTitle}>Admin Access Required</Text>
+              <Text style={styles.accessDeniedDesc}>
+                Only administrators can manage integrations and connect external services.
+              </Text>
+              <GlassButton
+                title="Return to Dashboard"
+                onPress={() => router.push('/')}
+                style={styles.returnBtn}
+              />
+            </GlassCard>
+          ) : loading ? (
             <View style={styles.loadingContainer}>
               <ActivityIndicator size="large" color={colors.text.primary} />
               <Text style={styles.loadingText}>Loading...</Text>
