@@ -163,8 +163,11 @@ npx serve dist -l 3000 -s
 - `GET /api/projects/{id}/dropbox-file-url` - Get file preview/download URL
 
 ### Access Control
-- **All users**: View and download files
-- **Admins only**: Connect/disconnect Dropbox, configure folder links
+- **All users**: View and download files from Construction Plans page
+- **Admins only**: 
+  - Access Admin Integrations page (connect/disconnect Dropbox)
+  - Configure project Dropbox settings (enable sync, select folders)
+  - Non-admins see "Admin Access Required" message on restricted pages
 
 ## Test Credentials
 - **Email**: rfs2671@gmail.com
