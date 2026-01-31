@@ -425,6 +425,27 @@ const styles = StyleSheet.create({
     color: colors.text.muted,
     fontSize: 14,
   },
+  accessDeniedCard: {
+    alignItems: 'center',
+    paddingVertical: spacing.xxl,
+    gap: spacing.md,
+  },
+  accessDeniedTitle: {
+    fontSize: 22,
+    fontWeight: '500',
+    color: colors.text.primary,
+    marginTop: spacing.md,
+  },
+  accessDeniedDesc: {
+    fontSize: 14,
+    color: colors.text.muted,
+    textAlign: 'center',
+    maxWidth: 300,
+    lineHeight: 22,
+  },
+  returnBtn: {
+    marginTop: spacing.lg,
+  },
   integrationCard: {
     marginBottom: spacing.xl,
   },
