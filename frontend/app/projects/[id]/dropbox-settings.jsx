@@ -249,11 +249,15 @@ export default function ProjectDropboxSettingsScreen() {
                   </View>
                   <Switch
                     value={dropboxEnabled}
-                    onValueChange={handleToggleDropbox}
+                    onValueChange={isAdmin ? handleToggleDropbox : undefined}
+                    disabled={!isAdmin}
                     trackColor={{ false: colors.glass.background, true: DROPBOX_BLUE }}
                     thumbColor="#fff"
                   />
                 </View>
+                {!isAdmin && (
+                  <Text style={styles.adminOnlyHint}>Admin access required to modify settings</Text>
+                )}
               </GlassCard>
 
               {/* Folder Selection */}
