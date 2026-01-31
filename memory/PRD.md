@@ -196,6 +196,7 @@ npx serve dist -l 3000 -s
 - axios
 
 ## Next Steps (Backlog)
+- Dark/light theme toggle
 - Android native build testing
 - Photo upload integration
 - Voice-to-text for daily logs
@@ -203,4 +204,4 @@ npx serve dist -l 3000 -s
 - Offline support
 
 ---
-*Last Updated: January 30, 2026*
+*Last Updated: January 31, 2026*
