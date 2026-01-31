@@ -226,4 +226,69 @@ export const dailyLogsAPI = {
   },
 };
 
+/**
+ * Dropbox APIs
+ */
+export const dropboxAPI = {
+  // Get Dropbox connection status
+  getStatus: async () => {
+    const response = await apiClient.get('/api/dropbox/status');
+    return response.data;
+  },
+
+  // Get OAuth authorization URL
+  getAuthUrl: async () => {
+    const response = await apiClient.get('/api/dropbox/auth-url');
+    return response.data;
+  },
+
+  // Complete OAuth flow with authorization code
+  completeAuth: async (code) => {
+    const response = await apiClient.post('/api/dropbox/complete-auth', { code });
+    return response.data;
+  },
+
+  // Disconnect Dropbox
+  disconnect: async () => {
+    const response = await apiClient.delete('/api/dropbox/disconnect');
+    return response.data;
+  },
+
+  // Link Dropbox folder to project
+  linkToProject: async (projectId, folderPath) => {
+    const response = await apiClient.post(`/api/projects/${projectId}/link-dropbox`, {
+      folder_path: folderPath,
+    });
+    return response.data;
+  },
+
+  // Get Dropbox files for a project
+  getProjectFiles: async (projectId) => {
+    const response = await apiClient.get(`/api/projects/${projectId}/dropbox-files`);
+    return response.data;
+  },
+
+  // Get user's Dropbox folders for selection
+  getFolders: async (path = '') => {
+    const response = await apiClient.get('/api/dropbox/folders', {
+      params: { path },
+    });
+    return response.data;
+  },
+
+  // Sync project files from Dropbox
+  syncProject: async (projectId) => {
+    const response = await apiClient.post(`/api/projects/${projectId}/sync-dropbox`);
+    return response.data;
+  },
+
+  // Get file download/preview URL
+  getFileUrl: async (projectId, filePath) => {
+    const response = await apiClient.get(`/api/projects/${projectId}/dropbox-file-url`, {
+      params: { file_path: filePath },
+    });
+    return response.data;
+  },
+};
+
 export default apiClient;
