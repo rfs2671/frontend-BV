@@ -355,8 +355,8 @@ export default function ProjectDropboxSettingsScreen() {
                 </>
               )}
 
-              {/* Folder Picker Modal */}
-              {showFolderPicker && (
+              {/* Folder Picker Modal - Admin only */}
+              {showFolderPicker && isAdmin && (
                 <GlassCard style={styles.folderPicker}>
                   <View style={styles.folderPickerHeader}>
                     <Text style={styles.folderPickerTitle}>Select Folder</Text>
