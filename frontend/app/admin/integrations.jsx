@@ -20,6 +20,7 @@ import {
   LogOut,
   FolderOpen,
   RefreshCw,
+  ShieldAlert,
 } from 'lucide-react-native';
 import AnimatedBackground from '../../src/components/AnimatedBackground';
 import { GlassCard, StatCard, IconPod } from '../../src/components/GlassCard';
