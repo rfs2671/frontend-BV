@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, StyleSheet, Pressable, Text } from 'react-native';
 import { useRouter, usePathname } from 'expo-router';
 import { BlurView } from 'expo-blur';
@@ -20,7 +20,43 @@ const navItems = [
 ];
 
 /**
- * FloatingNav - Bottom navigation with glassmorphism
+ * NavItem - Individual nav button with hover support
+ */
+const NavItem = ({ item, isActive, onPress }) => {
+  const [isHovered, setIsHovered] = useState(false);
+  const Icon = item.icon;
+
+  return (
+    <Pressable
+      onPress={onPress}
+      onHoverIn={() => setIsHovered(true)}
+      onHoverOut={() => setIsHovered(false)}
+      style={[
+        styles.navItem,
+        isActive && styles.navItemActive,
+        isHovered && !isActive && styles.navItemHovered,
+      ]}
+    >
+      <Icon
+        size={18}
+        strokeWidth={1.5}
+        color={isActive || isHovered ? colors.text.primary : colors.text.muted}
+      />
+      <Text
+        style={[
+          styles.navLabel,
+          (isActive || isHovered) && styles.navLabelActive,
+        ]}
+        numberOfLines={1}
+      >
+        {item.label}
+      </Text>
+    </Pressable>
+  );
+};
+
+/**
+ * FloatingNav - Bottom navigation with glassmorphism and hover effects
  */
 const FloatingNav = () => {
   const router = useRouter();
@@ -32,33 +68,13 @@ const FloatingNav = () => {
         <View style={styles.nav}>
           {navItems.map((item) => {
             const isActive = pathname === item.path;
-            const Icon = item.icon;
-
             return (
-              <Pressable
+              <NavItem
                 key={item.path}
+                item={item}
+                isActive={isActive}
                 onPress={() => router.push(item.path)}
-                style={({ pressed }) => [
-                  styles.navItem,
-                  isActive && styles.navItemActive,
-                  pressed && styles.navItemPressed,
-                ]}
-              >
-                <Icon
-                  size={18}
-                  strokeWidth={1.5}
-                  color={isActive ? colors.text.primary : colors.text.muted}
-                />
-                <Text
-                  style={[
-                    styles.navLabel,
-                    isActive && styles.navLabelActive,
-                  ]}
-                  numberOfLines={1}
-                >
-                  {item.label}
-                </Text>
-              </Pressable>
+              />
             );
           })}
         </View>
@@ -104,17 +120,19 @@ const styles = StyleSheet.create({
     paddingVertical: spacing.sm + 4,
     paddingHorizontal: spacing.md,
     borderRadius: borderRadius.lg,
+    transition: 'all 0.2s ease',
   },
   navItemActive: {
     backgroundColor: 'rgba(255, 255, 255, 0.15)',
   },
-  navItemPressed: {
-    opacity: 0.7,
+  navItemHovered: {
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
   },
   navLabel: {
     fontSize: 13,
     fontWeight: '500',
     color: colors.text.muted,
+    transition: 'color 0.2s ease',
   },
   navLabelActive: {
     color: colors.text.primary,
