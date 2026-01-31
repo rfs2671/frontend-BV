@@ -1,127 +1,166 @@
-# Blueview2 Frontend - Product Requirements Document
+# Blueview2 - Expo React Native App
 
 ## Project Overview
-Blueview is a construction site operations management application with a "cool tech futuristic" glassmorphism aesthetic (Base44 design system), now connected to the production backend API.
+Blueview is a construction site operations management application converted from Create React App to Expo React Native, maintaining the "cool tech futuristic" glassmorphism aesthetic (Base44 design system).
 
-## Original Problem Statement
-Transform the Blueview2 frontend UI/UX to a sophisticated futuristic aesthetic and connect it to the production backend API at `https://blueview2-production.up.railway.app`.
+## Conversion Complete ✅
 
-## Status: ✅ COMPLETE
-
-All frontend pages are now integrated with the live production API. Authentication, data fetching, and CRUD operations are working correctly.
+Successfully converted from:
+- **React** (Create React App) → **React Native** (Expo)
+- **React Router DOM** → **Expo Router** (file-based routing)
+- **Tailwind CSS** → **React Native StyleSheet**
+- **Framer Motion** → **React Native Animated**
 
 ## Tech Stack
-- **Frontend**: React.js 19, Tailwind CSS, Framer Motion
-- **Backend**: External FastAPI API (hosted on Railway)
-- **Database**: MongoDB Atlas (managed by backend)
-- **Authentication**: JWT-based authentication
+- **Framework**: Expo SDK 54 with Expo Router v6
+- **Platforms**: Android, Web
+- **Styling**: React Native StyleSheet + expo-linear-gradient + expo-blur
+- **Navigation**: Expo Router (file-based)
+- **State**: React Context (AuthContext)
+- **API**: Axios with JWT authentication
 
-## API Integration (Verified Working)
+## File Structure
+```
+/app/frontend/
+├── app/                      # Expo Router pages (file-based routing)
+│   ├── _layout.jsx           # Root layout with providers
+│   ├── index.jsx             # Dashboard (/)
+│   ├── login.jsx             # Login page (/login)
+│   ├── workers.jsx           # Workers page (/workers)
+│   ├── daily-log.jsx         # Daily Log page (/daily-log)
+│   ├── reports.jsx           # Reports page (/reports)
+│   └── projects/
+│       └── index.jsx         # Projects page (/projects)
+├── src/
+│   ├── components/           # Reusable UI components
+│   │   ├── AnimatedBackground.js
+│   │   ├── FloatingNav.js
+│   │   ├── GlassButton.js
+│   │   ├── GlassCard.js
+│   │   ├── GlassInput.js
+│   │   ├── GlassSkeleton.js
+│   │   └── Toast.js
+│   ├── context/
+│   │   └── AuthContext.js    # Auth state management
+│   ├── styles/
+│   │   ├── globalStyles.js   # Global StyleSheet
+│   │   └── theme.js          # Base44 theme colors & typography
+│   └── utils/
+│       └── api.js            # Axios API utility with JWT
+├── app.json                  # Expo config
+├── babel.config.js           # Babel config for Reanimated
+└── package.json
+```
+
+## Design System (Base44 Aesthetic) ✅
+
+### Colors
+```javascript
+background: '#050a12' → '#0A1929' → '#050a12'
+glass.background: 'rgba(255, 255, 255, 0.08)'
+glass.border: 'rgba(255, 255, 255, 0.15)'
+text.primary: 'rgba(255, 255, 255, 0.9)'
+text.secondary: 'rgba(255, 255, 255, 0.6)'
+text.muted: 'rgba(255, 255, 255, 0.4)'
+```
+
+### Visual Effects
+- Deep blue gradient background (LinearGradient)
+- Floating orbs with pulsing opacity (Animated)
+- Scanline animation (Animated)
+- Glassmorphism cards (expo-blur + transparency)
+- Skeleton shimmer loaders
+
+### Typography
+- Hero: 48px, weight 200, tracking -1
+- Labels: 11px, uppercase, tracking 2px
+- Stats: 36px, weight 200
+
+## API Integration ✅
 
 ### Base URL
 `https://blueview2-production.up.railway.app`
 
 ### Authentication
-- POST `/api/auth/login` - Returns `{token, user}` object
-- GET `/api/auth/me` - Returns user profile
-- JWT token stored in localStorage as `blueview_token`
+- JWT tokens stored in AsyncStorage
+- Auto-attach to all requests via Axios interceptor
+- 401 handling with redirect to login
 
 ### Verified Endpoints
-| Endpoint | Method | Status |
-|----------|--------|--------|
-| `/api/auth/login` | POST | ✅ Working |
-| `/api/auth/me` | GET | ✅ Working |
-| `/api/projects` | GET/POST | ✅ Working |
-| `/api/workers` | GET | ✅ Working |
-| `/api/checkins` | GET | ✅ Working |
-| `/api/daily-logs` | GET/POST | ✅ Working |
+- POST `/api/auth/login` - Login
+- GET `/api/auth/me` - User profile
+- GET/POST `/api/projects` - Projects CRUD
+- GET `/api/workers` - Workers list
+- GET `/api/checkins` - Check-ins
+- GET/POST `/api/daily-logs` - Daily logs
 
-## Pages Implemented & Tested
+## Running the App
 
-### 1. Login (`/login`) ✅
-- JWT authentication with production API
-- Error handling with toast notifications
-- Session persistence
-
-### 2. Dashboard (`/`) ✅
-- User greeting with name from API
-- Dynamic stats from `/api/workers` and `/api/projects`
-- Currently shows: 4 Total Workers, 2 Active Projects
-
-### 3. Projects (`/projects`) ✅
-- Lists projects from API
-- Create new project (POST)
-- Delete project functionality
-
-### 4. Workers (`/workers`) ✅
-- Date selector for viewing different days
-- Worker check-in list from API
-- Stats: 4 Workers, 1 Project, 4 Companies
-
-### 5. Daily Log (`/daily-log`) ✅
-- Project selector from API
-- Weather picker
-- Subcontractor cards
-- Submit functionality
-
-### 6. Reports (`/reports`) ✅
-- System status display
-- Project/Worker counts from API
-- PDF generation capability
-
-## Test Results (Iteration 4)
-
-**Success Rate: 100%**
-- Login flow: ✅
-- Navigation: ✅
-- Dashboard: ✅
-- Projects CRUD: ✅
-- Workers display: ✅
-- Session persistence: ✅
-- Logout: ✅
-
-## Design System (Base44 Aesthetic)
-
-### Color Palette
-- Background: Linear gradient #050a12 → #0A1929 → #050a12
-- Glass Cards: white/[0.1] via-white/[0.05] to-white/[0.02]
-- Text: white/90, white/60, white/40
-
-### Visual Effects
-- Animated grid overlay
-- Moving scanline animation
-- Floating white glow orbs
-- Glassmorphism skeleton loaders
-- Toast notifications
-
-## File Structure
-```
-/app/frontend/src/
-├── components/ui/
-│   ├── AnimatedBackground.jsx
-│   ├── FloatingNav.jsx
-│   ├── GlassSkeleton.jsx      ← Loading states
-│   ├── Toast.jsx              ← Notifications
-│   └── ...shadcn components
-├── pages/
-│   ├── LoginPage.jsx          ✅ API integrated
-│   ├── Dashboard.jsx          ✅ API integrated
-│   ├── ProjectsPage.jsx       ✅ API integrated
-│   ├── WorkersPage.jsx        ✅ API integrated
-│   ├── DailyLogPage.jsx       ✅ API integrated
-│   └── ReportsPage.jsx        ✅ API integrated
-├── utils/
-│   └── api.js                 ← Centralized API utility
-└── App.js                     ← ToastProvider, session management
+### Development
+```bash
+cd /app/frontend
+npm start           # Expo dev server
+npm run web         # Web only
+npm run android     # Android emulator/device
 ```
 
-## Future Enhancements (Backlog)
-- Photo upload for daily logs
-- Voice-to-text for work descriptions
-- Dark/Light theme toggle
-- Real-time updates via WebSocket
-- NFC tag scanning integration
+### Production Build
+```bash
+npx expo export --platform web    # Web build
+npx expo build:android            # Android APK
+```
+
+### Serve Static Build
+```bash
+npx serve dist -l 3000 -s
+```
+
+## Pages Implemented
+
+| Route | Page | Status |
+|-------|------|--------|
+| `/login` | Login | ✅ Working |
+| `/` | Dashboard | ✅ Working |
+| `/projects` | Projects | ✅ Working |
+| `/workers` | Workers | ✅ Working |
+| `/daily-log` | Daily Log | ✅ Working |
+| `/reports` | Reports | ✅ Working |
+
+## Test Credentials
+- **Email**: rfs2671@gmail.com
+- **Password**: Asdddfgh1$
+
+## What Changed from CRA
+
+| CRA | Expo |
+|-----|------|
+| `BrowserRouter` | `expo-router/Stack` |
+| `useNavigate()` | `useRouter()` |
+| `useLocation()` | `usePathname()` |
+| `useParams()` | `useLocalSearchParams()` |
+| Tailwind classes | StyleSheet objects |
+| `framer-motion` | `Animated` API |
+| `localStorage` | `AsyncStorage` |
+| `fetch()` | `axios` |
+
+## Dependencies Added
+- expo-router
+- expo-linear-gradient
+- expo-blur
+- expo-linking
+- @react-native-async-storage/async-storage
+- react-native-screens
+- react-native-safe-area-context
+- react-native-reanimated
+- lucide-react-native
+- axios
+
+## Next Steps (Backlog)
+- Android native build testing
+- Photo upload integration
+- Voice-to-text for daily logs
+- Push notifications
+- Offline support
 
 ---
-*Last Updated: January 28, 2026*
-*Test Report: /app/test_reports/iteration_4.json*
+*Last Updated: January 30, 2026*
