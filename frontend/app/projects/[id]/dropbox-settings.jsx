@@ -37,7 +37,7 @@ const DROPBOX_BLUE = '#0061FF';
 export default function ProjectDropboxSettingsScreen() {
   const router = useRouter();
   const { id: projectId } = useLocalSearchParams();
-  const { logout, isAuthenticated, isLoading: authLoading } = useAuth();
+  const { logout, isAuthenticated, isLoading: authLoading, user } = useAuth();
   const toast = useToast();
 
   const [loading, setLoading] = useState(true);
@@ -54,6 +54,9 @@ export default function ProjectDropboxSettingsScreen() {
   const [folders, setFolders] = useState([]);
   const [currentPath, setCurrentPath] = useState('');
   const [loadingFolders, setLoadingFolders] = useState(false);
+
+  // Check if user is admin
+  const isAdmin = user?.role === 'admin';
 
   // Redirect if not authenticated
   useEffect(() => {
