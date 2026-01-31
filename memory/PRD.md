@@ -125,6 +125,46 @@ npx serve dist -l 3000 -s
 | `/workers` | Workers | ✅ Working |
 | `/daily-log` | Daily Log | ✅ Working |
 | `/reports` | Reports | ✅ Working |
+| `/admin/integrations` | Dropbox Integration Admin | ✅ NEW - Working |
+| `/projects/[id]/dropbox-settings` | Project Dropbox Settings | ✅ NEW - Working |
+| `/projects/[id]/construction-plans` | Construction Plans Viewer | ✅ NEW - Working |
+
+## Dropbox Integration (January 31, 2026) ✅
+
+### Features Implemented
+1. **Admin Integrations Page** (`/admin/integrations`)
+   - Dropbox connection status display
+   - "Connect to Dropbox" OAuth button
+   - "Disconnect" functionality
+   - List of all projects with Dropbox status
+   
+2. **Project Dropbox Settings** (`/projects/[id]/dropbox-settings`)
+   - Enable/disable Dropbox sync toggle
+   - Folder browser for selecting Dropbox folder
+   - Sync status and file count
+   - Manual sync button
+   
+3. **Construction Plans Viewer** (`/projects/[id]/construction-plans`)
+   - File listing from synced Dropbox folder
+   - Search and filter functionality
+   - File type icons (PDF, images, documents)
+   - View and download buttons
+   - Sync status bar
+
+### Dropbox API Endpoints
+- `GET /api/dropbox/status` - Check connection status
+- `GET /api/dropbox/auth-url` - Get OAuth authorization URL
+- `POST /api/dropbox/complete-auth` - Complete OAuth flow
+- `DELETE /api/dropbox/disconnect` - Disconnect account
+- `GET /api/dropbox/folders` - List Dropbox folders
+- `POST /api/projects/{id}/link-dropbox` - Link folder to project
+- `GET /api/projects/{id}/dropbox-files` - Get synced files
+- `POST /api/projects/{id}/sync-dropbox` - Trigger sync
+- `GET /api/projects/{id}/dropbox-file-url` - Get file preview/download URL
+
+### Access Control
+- **All users**: View and download files
+- **Admins only**: Connect/disconnect Dropbox, configure folder links
 
 ## Test Credentials
 - **Email**: rfs2671@gmail.com
