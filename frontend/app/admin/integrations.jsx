@@ -43,6 +43,9 @@ export default function AdminIntegrationsScreen() {
   const [dropboxStatus, setDropboxStatus] = useState({ connected: false });
   const [projects, setProjects] = useState([]);
 
+  // Check if user is admin
+  const isAdmin = user?.role === 'admin';
+
   // Redirect if not authenticated
   useEffect(() => {
     if (!authLoading && !isAuthenticated) {
