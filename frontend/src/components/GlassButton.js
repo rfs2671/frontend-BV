@@ -111,9 +111,9 @@ const styles = StyleSheet.create({
     marginLeft: spacing.sm,
   },
   hovered: {
-    backgroundColor: 'rgba(255, 255, 255, 0.15)',
-    borderColor: 'rgba(255, 255, 255, 0.3)',
-    transform: [{ scale: 1.02 }],
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    borderColor: 'rgba(255, 255, 255, 0.4)',
+    transform: [{ scale: 1.03 }],
   },
   pressed: {
     opacity: 0.8,

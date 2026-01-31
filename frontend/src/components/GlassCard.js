@@ -107,9 +107,9 @@ const styles = StyleSheet.create({
     transition: 'all 0.2s ease',
   },
   statHovered: {
-    backgroundColor: 'rgba(255, 255, 255, 0.12)',
-    borderColor: 'rgba(255, 255, 255, 0.25)',
-    transform: [{ scale: 1.02 }, { translateY: -2 }],
+    backgroundColor: 'rgba(255, 255, 255, 0.18)',
+    borderColor: 'rgba(255, 255, 255, 0.35)',
+    transform: [{ scale: 1.03 }, { translateY: -4 }],
   },
   statContent: {
     padding: spacing.lg,

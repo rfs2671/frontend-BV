@@ -73,12 +73,12 @@ const styles = StyleSheet.create({
     transition: 'all 0.2s ease',
   },
   hovered: {
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
-    borderColor: 'rgba(255, 255, 255, 0.2)',
+    backgroundColor: 'rgba(255, 255, 255, 0.15)',
+    borderColor: 'rgba(255, 255, 255, 0.3)',
   },
   focused: {
-    backgroundColor: 'rgba(255, 255, 255, 0.12)',
-    borderColor: 'rgba(255, 255, 255, 0.3)',
+    backgroundColor: 'rgba(255, 255, 255, 0.18)',
+    borderColor: 'rgba(255, 255, 255, 0.4)',
   },
   input: {
     flex: 1,
